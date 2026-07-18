@@ -1,0 +1,137 @@
+@import "tailwindcss";
+
+/* .footer{
+  position: relative;
+  overflow: hidden;
+  background: #e4de2b;
+} */
+
+
+.footer{
+  position: relative;
+  overflow: hidden;
+ 
+
+      background: linear-gradient(
+    180deg,
+    #e5e7eb 0%,
+    #dde3ea 100%
+  );
+
+  
+}
+
+.icon{
+  animation:float 3s ease-in-out infinite;
+}
+
+@keyframes float{
+  0%,100%{
+    transform:translateY(0);
+  }
+  50%{
+    transform:translateY(-3px);
+  }
+}
+.yt:hover{
+  background:#FF0000;
+  color:white;
+  box-shadow:0 10px 25px rgba(255,0,0,.35);
+}
+
+.laundryContact {
+    width:max-content ;
+    height:auto;
+    z-index: -1;
+}
+
+
+
+@keyframes up{
+  0%{
+    transform: translateY(0);
+    opacity: 0;
+  }
+
+  20%{
+    opacity: 1;
+  }
+
+  100%{
+    transform: translateY(-700px);
+    opacity: 0;
+  }
+}
+
+
+
+.form-box{
+  background:#fff;
+  border:1px solid #dbeafe;
+  border-radius:12px;
+  padding:28px;
+}
+
+.form-box h2{
+  color:#0f3d7a;
+  font-size:34px;
+  font-weight:700;
+}
+
+.form-box p{
+  color:#6b7280;
+  margin-top:8px;
+  margin-bottom:25px;
+}
+
+.row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+}
+
+.field{
+  margin-bottom:18px;
+}
+
+.field label{
+  display:block;
+  margin-bottom:6px;
+  font-size:11px;
+  font-weight:700;
+  color:#0f3d7a;
+  letter-spacing:1px;
+}
+
+.field input,
+.field select,
+.field textarea{
+  width:100%;
+  padding:12px 14px;
+  border:1px solid #dbeafe;
+  border-radius:8px;
+  outline:none;
+  font-size:14px;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus{
+  border-color:#2563eb;
+}
+
+.send-btn{
+  width:100%;
+  border:none;
+  background:#0f3d7a;
+  color:white;
+  padding:14px;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:600;
+  transition:.3s;
+}
+
+.send-btn:hover{
+  background:#1d4ed8;
+}
