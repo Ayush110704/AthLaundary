@@ -1169,7 +1169,7 @@ function BookingDetailView({ booking, onBack, onStatusUpdate }) {
 
 function OrderManagement() {
   const { bookings, setBookings, updateBooking } = useOrders();
-  
+  const API_URL = import.meta.env.VITE_API_URL;
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [filterStatus, setFilterStatus] = useState('All');
