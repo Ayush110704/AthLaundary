@@ -6,7 +6,7 @@ dotenv.config();
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
-
+import paymentRoutes from './routes/paymentRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import addressRoutes from './routes/addressRoutes.js';
@@ -69,6 +69,7 @@ app.use('/api/terms', termRoutes);
 app.use('/api/services', serviceRoutes);
 app.use('/api/contacts', contactRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/payment', paymentRoutes);
 
 // ================================
 // 404 HANDLER

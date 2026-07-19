@@ -37,11 +37,22 @@ const CheckOut = () => {
       text: result.message,
       confirmButtonColor: "#2563eb",
     });
-
     return;
   }
 
-  setCurrentStep((prev) => prev + 1);
+  // IF WE ARE AT STEP 4 (PAYMENT), TRIGGER RAZORPAY
+  if (currentStep === 4) {
+    if (checkoutData.payment.method === "cod") {
+      // If COD, just save as usual
+      saveOrderToDatabase(); 
+    } else {
+      // If Card/UPI, open Razorpay
+      openRazorpay();
+    }
+  } else {
+    // For steps 1-3, just move forward
+    setCurrentStep((prev) => prev + 1);
+  }
 };
 
   return (
