@@ -546,12 +546,18 @@ function UserManagement() {
   const [selectedUser, setSelectedUser] = useState(null);
   const [showDetailView, setShowDetailView] = useState(false);
   const itemsPerPage = 5;
+  const API_URL = import.meta.env.VITE_API_URL;
+  const token = localStorage.getItem("token");
 
   const fetchUsers = async () => {
     try {
       setLoading(true);
       setError(null);
-      const res = await fetch(`${API_URL}/api/admin/users`);
+      const res = await fetch(`${API_URL}/api/admin/users`, {
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+});
       const data = await res.json();
       if (data.success) {
         const mappedUsers = data.users.map(u => ({

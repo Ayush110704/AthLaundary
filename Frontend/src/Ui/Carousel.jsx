@@ -103,11 +103,11 @@ const Carousel = ({
       </div>
       
       {/* Optional: Show pause indicator */}
-      {isPaused && (
+      {/* {isPaused && (
         <div className="absolute top-4 right-8 bg-black/70 text-white px-3 py-1 rounded-full text-sm">
           ⏸ Paused
         </div>
-      )}
+      )} */}
     </div>
   );
 };
