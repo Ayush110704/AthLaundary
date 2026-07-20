@@ -1,6 +1,6 @@
 
  import axios from 'axios';
- import React from 'react';
+ import React, {useState} from 'react';
 import { motion } from 'framer-motion';
 import { ShoppingBag, ArrowRight } from 'lucide-react';
 import validateCheckout from '../utils/validatesCheckout';
@@ -14,6 +14,8 @@ const OrderSummary = ({ Step, checkoutData }) => {
     const items = checkoutData.items || [];
     const deliveryFee = 49;
 
+const[isConfirm,setIsConfirm]= useState(false);
+
     // Calculate totals safely
     const subtotal = items.reduce((total, item) => {
         return total + (Number(item.price || 0) * Number(item.quantity || 0));
@@ -23,10 +25,18 @@ const OrderSummary = ({ Step, checkoutData }) => {
 
 const IS_DEV_MODE = true;
  const handleConfirm = async () => {
+
+
+ if (checkoutData.payment?.method === "cod" && isConfirm) return
+
     const result = validateCheckout();
     if (!result.success) {
         Swal.fire("Error", result.message, "error");
         return;
+    }
+
+     if (checkoutData.payment?.method === "cod") {
+        setIsConfirm(true);
     }
 
     // 1. Define orderData FIRST so it's available everywhere
@@ -95,6 +105,7 @@ const IS_DEV_MODE = true;
       localStorage.removeItem("checkoutData");
       navigate("/user-orders");
     } catch (error) {
+          setIsConfirm(false);
       Swal.fire("Error", "Could not save order", "error");
     }
   };
@@ -144,13 +155,21 @@ const IS_DEV_MODE = true;
                     </div>
 
                     {Step === 4 && (
-                        <button
-                            onClick={handleConfirm}
-                            className="w-full flex justify-center items-center gap-2 rounded-xl bg-blue-900 py-3 text-white font-semibold hover:bg-blue-800 transition"
-                        >
-                            {checkoutData.payment?.method === "cod" ? "Confirm Booking" : "Proceed to Pay"}
-                            <ArrowRight size={18} />
-                        </button>
+                       <button
+    onClick={handleConfirm}
+    disabled={checkoutData.payment?.method === "cod" && isConfirm}
+    className={`w-full flex justify-center items-center gap-2 rounded-xl py-3 text-white font-semibold transition ${
+        checkoutData.payment?.method === "cod" && isConfirm ? "bg-gray-400 cursor-not-allowed" : "bg-blue-900 hover:bg-blue-800" }`}
+>
+    {checkoutData.payment?.method === "cod"? isConfirm
+            ? "Processing..."
+            : "Confirm Booking"
+        : "Proceed to Pay"}
+
+    {!(checkoutData.payment?.method === "cod" && isConfirm) && (
+        <ArrowRight size={18} />
+    )}
+</button>
                     )}
                 </div>
             </motion.div>

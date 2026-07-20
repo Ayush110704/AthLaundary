@@ -530,7 +530,8 @@ const SubService = () => {
               }}
               whileHover={{ y: -3, scale: 1.03, }}
               whileTap={{ scale: 0.97, }}
-              className="group mt-8 md:mt-10 py-3 md:py-5 px-6 md:px-8 rounded-full bg-linear-to-r from-blue-900 via-blue-600 to-blue-400 text-white font-semibold text-base md:text-xl shadow-xl"  >
+              onClick={()=>navigate("/checkout")}
+              className="group mt-8 md:mt-10 py-3 md:py-3 px-6 md:px-8 rounded-full bg-linear-to-r from-blue-900 via-blue-600 to-blue-400 text-white font-semibold text-base md:text-md shadow-xl"  >
               <span className="flex items-center gap-2">
                 Schedule Pickup
 

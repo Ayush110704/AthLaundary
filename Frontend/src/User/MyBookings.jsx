@@ -255,17 +255,19 @@ const MyOrders = () => {
                 <p className="text-xs text-gray-400">Placed on <span className="text-gray-600 font-medium">{order.date}</span></p>
               </div>
               <div className="flex flex-wrap gap-2 w-full md:w-auto">
-                <button className="flex-1 md:flex-initial flex items-center justify-center gap-1.5 px-4 py-2 bg-blue-50 text-blue-600 text-xs font-bold rounded-xl hover:bg-blue-100 transition">
+                {/* <button className="flex-1 md:flex-initial flex items-center justify-center gap-1.5 px-4 py-2 bg-blue-50 text-blue-600 text-xs font-bold rounded-xl hover:bg-blue-100 transition">
                   <Download size={14} /> Invoice
-                </button>
+                </button> */}
                  <button 
   // Update this line:
   onClick={() => handleReorder(order)} 
-  className="flex-1 md:flex-initial flex items-center justify-center gap-1.5 px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded-xl hover:bg-blue-700 shadow-sm shadow-blue-200 transition"
+  className="flex-1 md:flex-initial flex items-center justify-center cursor-pointer gap-1.5 px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded-xl hover:bg-blue-700 shadow-sm shadow-blue-200 transition"
 >
   <RotateCw size={14} /> Reorder
 </button>
-                <button className="w-full md:w-auto flex items-center justify-center gap-1.5 px-4 py-2 bg-gray-50 text-gray-600 text-xs font-bold rounded-xl border border-gray-200 hover:bg-gray-100 transition">
+                <button 
+                onClick={()=>navigate("/contact")}
+                className="w-full md:w-auto flex items-center justify-center cursor-pointer gap-1.5 px-4 py-2 bg-gray-50 text-gray-600 text-xs font-bold rounded-xl border border-gray-200 hover:bg-gray-100 transition">
                   <Headset size={14} /> Support
                 </button>
               </div>
@@ -363,7 +365,7 @@ const MyOrders = () => {
                 </h3>
                 <div className="space-y-3 text-xs">
                   <div className="flex justify-between text-gray-500">
-                    <span>Washing & Cleaning Cost</span>
+                    <span>Total Service Charge</span>
                     <span className="font-semibold text-gray-800">₹{order.summary.subtotal}</span>
                   </div>
                   <div className="flex justify-between text-gray-500">

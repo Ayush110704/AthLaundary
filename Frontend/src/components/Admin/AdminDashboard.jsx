@@ -89,45 +89,41 @@ const AdminDashboard = () => {
     }
   };
 
-  // Real profit/loss data for weekly revenue
+  // Real revenue data for weekly revenue
   const orderData = [
-    { name: 'Mon', orders: 45, revenue: 12000, profit: 3600, loss: 0 },
-    { name: 'Tue', orders: 52, revenue: 15600, profit: 4680, loss: 0 },
-    { name: 'Wed', orders: 38, revenue: 11400, profit: 3420, loss: 0 },
-    { name: 'Thu', orders: 60, revenue: 18000, profit: 5400, loss: 0 },
-    { name: 'Fri', orders: 75, revenue: 22500, profit: 6750, loss: 0 },
-    { name: 'Sat', orders: 48, revenue: 14400, profit: 4320, loss: 0 },
-    { name: 'Sun', orders: 30, revenue: 9000, profit: 2700, loss: 0 },
+    { name: 'Mon', orders: 45, revenue: 12000 },
+    { name: 'Tue', orders: 52, revenue: 15600 },
+    { name: 'Wed', orders: 38, revenue: 11400 },
+    { name: 'Thu', orders: 60, revenue: 18000 },
+    { name: 'Fri', orders: 75, revenue: 22500 },
+    { name: 'Sat', orders: 48, revenue: 14400 },
+    { name: 'Sun', orders: 30, revenue: 9000 },
   ];
 
   // Real service distribution with actual numbers
   const serviceDistribution = [
-    { name: 'Dry Cleaning', value: 35, revenue: 87500, profit: 26250 },
-    { name: 'Wash & Fold', value: 40, revenue: 100000, profit: 40000 },
-    { name: 'Ironing', value: 15, revenue: 37500, profit: 15000 },
-    { name: 'Stain Removal', value: 10, revenue: 25000, profit: 10000 },
+    { name: 'Dry Cleaning', value: 35, revenue: 87500 },
+    { name: 'Wash & Fold', value: 40, revenue: 100000 },
+    { name: 'Ironing', value: 15, revenue: 37500 },
+    { name: 'Stain Removal', value: 10, revenue: 25000 },
   ];
 
-  // Calculate totals
+  // Calculate total revenue
   const totalServiceRevenue = serviceDistribution.reduce((sum, s) => sum + s.revenue, 0);
-  const totalServiceProfit = serviceDistribution.reduce((sum, s) => sum + s.profit, 0);
+  const totalOrderRevenue = orderData.reduce((sum, day) => sum + day.revenue, 0);
+  const totalRevenue = totalServiceRevenue + totalOrderRevenue;
 
-  // Monthly profit/loss data
+  // Monthly revenue data
   const monthlyData = [
-    { name: 'Jan', revenue: 85000, profit: 25500, loss: 2000 },
-    { name: 'Feb', revenue: 92000, profit: 27600, loss: 1500 },
-    { name: 'Mar', revenue: 78000, profit: 23400, loss: 3000 },
-    { name: 'Apr', revenue: 105000, profit: 31500, loss: 1000 },
-    { name: 'May', revenue: 112000, profit: 33600, loss: 500 },
-    { name: 'Jun', revenue: 98000, profit: 29400, loss: 2500 },
+    { name: 'Jan', revenue: 85000 },
+    { name: 'Feb', revenue: 92000 },
+    { name: 'Mar', revenue: 78000 },
+    { name: 'Apr', revenue: 105000 },
+    { name: 'May', revenue: 112000 },
+    { name: 'Jun', revenue: 98000 },
   ];
 
   const COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444'];
-
-  // Calculate total profit and loss from order data
-  const totalOrderRevenue = orderData.reduce((sum, day) => sum + day.revenue, 0);
-  const totalOrderProfit = orderData.reduce((sum, day) => sum + day.profit, 0);
-  const totalOrderLoss = orderData.reduce((sum, day) => sum + day.loss, 0);
 
   // Quick Actions Data  
   const quickActions = [
@@ -323,47 +319,23 @@ const AdminDashboard = () => {
         </motion.div>
       </div>
 
-      {/* Profit/Loss Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="bg-white rounded-xl shadow-sm p-6 border-l-4 border-green-500"
-        >
-          <p className="text-sm text-gray-500">Total Revenue</p>
-          <h3 className="text-2xl font-bold text-gray-800">₹{(totalServiceRevenue + totalOrderRevenue).toLocaleString()}</h3>
-          <span className="text-xs text-green-600">↑ 18.2% from last month</span>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="bg-white rounded-xl shadow-sm p-6 border-l-4 border-blue-500"
-        >
-          <p className="text-sm text-gray-500">Total Profit</p>
-          <h3 className="text-2xl font-bold text-gray-800">₹{(totalServiceProfit + totalOrderProfit).toLocaleString()}</h3>
-          <span className="text-xs text-green-600">↑ 22.5% from last month</span>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="bg-white rounded-xl shadow-sm p-6 border-l-4 border-red-500"
-        >
-          <p className="text-sm text-gray-500">Total Loss</p>
-          <h3 className="text-2xl font-bold text-red-600">₹{totalOrderLoss.toLocaleString()}</h3>
-          <span className="text-xs text-green-600">↓ 0% from last month</span>
-        </motion.div>
-      </div>
+      {/* Total Revenue Summary Card */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        className="bg-white rounded-xl shadow-sm p-6 border-l-4 border-blue-500 mb-8"
+      >
+        <p className="text-sm text-gray-500">Total Revenue</p>
+        <h3 className="text-3xl font-bold text-gray-800">₹{totalRevenue.toLocaleString()}</h3>
+        <span className="text-xs text-green-600">↑ 18.2% from last month</span>
+      </motion.div>
 
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        {/* Revenue Chart with Profit/Loss */}
+        {/* Weekly Revenue Chart */}
         <div className="bg-white rounded-xl shadow-sm p-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">Weekly Revenue & Profit</h3>
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">Weekly Revenue</h3>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={orderData}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -372,17 +344,15 @@ const AdminDashboard = () => {
               <Tooltip content={<CustomTooltip />} />
               <Legend />
               <Bar dataKey="revenue" fill="#3B82F6" name="Revenue" />
-              <Bar dataKey="profit" fill="#10B981" name="Profit" />
-              <Bar dataKey="loss" fill="#EF4444" name="Loss" />
             </BarChart>
           </ResponsiveContainer>
           <div className="mt-2 text-xs text-gray-500 text-center">
-            Showing revenue, profit, and loss for the current week
+            Showing revenue for the current week
           </div>
         </div>
 
-        {/* Service Distribution with Profit */}
-        <div className="bg-white rounded-xl shadow-sm p-6">
+        {/* Service Distribution */}
+        {/* <div className="bg-white rounded-xl shadow-sm p-6">
           <h3 className="text-lg font-semibold text-gray-800 mb-4">Service Distribution</h3>
           <div className="flex justify-center">
             <ResponsiveContainer width="100%" height={400}>
@@ -412,7 +382,7 @@ const AdminDashboard = () => {
               </PieChart>
             </ResponsiveContainer>
           </div>
-        </div>
+        </div> */}
       </div>
 
       {/* Monthly Trend */}
@@ -426,8 +396,6 @@ const AdminDashboard = () => {
             <Tooltip content={<CustomTooltip />} />
             <Legend />
             <Line type="monotone" dataKey="revenue" stroke="#3B82F6" name="Revenue" strokeWidth={2} />
-            <Line type="monotone" dataKey="profit" stroke="#10B981" name="Profit" strokeWidth={2} />
-            <Line type="monotone" dataKey="loss" stroke="#EF4444" name="Loss" strokeWidth={2} />
           </LineChart>
         </ResponsiveContainer>
       </div>
