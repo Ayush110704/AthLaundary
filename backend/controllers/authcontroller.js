@@ -259,14 +259,42 @@ export const getUserOrders = async (req, res) => {
 };
 
 // 2. COMPLETE GOOGLE SIGNUP
+ // 2. COMPLETE GOOGLE SIGNUP
 export const completeGoogleSignup = async (req, res) => {
     const { email, firstName, lastName, phone } = req.body;
     try {
-        const newUser = new User({ email, firstName, lastName, phone });
+        // Adding a default password or handling it as per your schema requirements
+        const newUser = new User({ 
+            email, 
+            firstName, 
+            lastName, 
+            phone,
+            password: await bcrypt.hash(Math.random().toString(36), 10) // Random secure string
+        });
+        
         await newUser.save();
-        const jwtToken = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
-        res.status(201).json({ success: true, user: newUser, token: jwtToken });
+        
+        const jwtToken = jwt.sign(
+            { id: newUser._id, role: newUser.role }, 
+            process.env.JWT_SECRET, 
+            { expiresIn: '1d' }
+        );
+        
+        res.status(201).json({ 
+            success: true, 
+            user: {
+                id: newUser._id,
+                _id: newUser._id,
+                firstName: newUser.firstName,
+                lastName: newUser.lastName,
+                email: newUser.email,
+                phone: newUser.phone,
+                address: newUser.address || 'Not specified'
+            }, 
+            token: jwtToken 
+        });
     } catch (error) {
+        console.error("Signup Error:", error);
         res.status(400).json({ success: false, message: "Failed to create user" });
     }
 };
