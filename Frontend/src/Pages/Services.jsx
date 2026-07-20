@@ -159,7 +159,7 @@ const Services = () => {
           backgroundRepeat: "no-repeat",
         }}
       >
-        <div className="flex md:hidden absolute inset-0 md:mt-12 bg-black/20 z-10 min-h-screen"></div>
+        <div className="flex md:hidden absolute inset-0 md:mt-12 bg-black/50 z-10 min-h-screen"></div>
         <div className="md:flex hidden absolute inset-0 md:mt-12 bg-white/10 z-10 min-h-screen"></div>
 
         <div className="relative z-20 min-h-screen flex items-center  text-center md:text-left">
@@ -190,7 +190,7 @@ const Services = () => {
               initial={{ opacity: 0, scale: 1, }}
               animate={{ opacity: 1, scale: 1, }}
               transition={{ duration: 1, delay: 0.7 }}
-              className="mt-6 text-sm sm:text-base md:text-lg text-gray-400 font-semibold  md:text-blue-950 leading-8 max-w-xl">
+              className="mt-6 text-md sm:text-md md:text-lg text-gray-100 font-bold md:font-semibold  md:text-blue-950 leading-5 md:leading-8 max-w-xl">
 
               Professional laundry and dry cleaning with
               30-minute pickup, eco-friendly cleaning,
