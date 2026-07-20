@@ -387,10 +387,10 @@ const Profile = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
-            className="mt-6 grid grid-cols-3 gap-2 md:gap-4"
+            className="mt-6 grid grid-cols-2 gap-2 md:gap-4"
           >
             {/* Member Since */}
-            <div className="bg-white rounded-xl p-2 md:p-4 border border-gray-200 text-center flex flex-col justify-center">
+            <div className="bg-white rounded-xl p-2 md:p-4 border border-gray-200 text-start flex flex-col justify-center">
               <p className="text-[10px] md:text-xs text-gray-500">Member Since</p>
               <p className="text-[11px] md:text-sm font-semibold text-gray-800 mt-0.5 md:mt-1 truncate">
                 {userData.joiningDate || 'N/A'}
@@ -407,6 +407,7 @@ const Profile = () => {
             </div> */}
 
             {/* Profile Complete */}
+            
             <div className="bg-white rounded-xl p-2 md:p-4 border border-gray-200 flex flex-col items-center justify-center"> 
               <div className="relative inline-flex items-center justify-center md:hidden">
                 <svg className="w-14 h-14 transform -rotate-90">
