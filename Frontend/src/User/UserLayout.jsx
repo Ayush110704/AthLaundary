@@ -271,7 +271,7 @@ const UserLayout = ({ children }) => {
                   <button
                     key={item.id}
                     onClick={() => handleNavigation(item.path, item.id)}
-                    className={`w-full flex items-center justify-between px-4 py-3 rounded-2xl font-bold text-sm transition-all duration-200 relative group ${
+                    className={`w-full flex items-center justify-between px-4 py-3 rounded-2xl font-bold text-sm transition-all duration-200 cursor-pointer relative group ${
                       isSelected 
                         ? "text-white" 
                         : "text-slate-600 hover:bg-slate-50/80 hover:text-slate-900 hover:scale-[1.02]"
@@ -309,9 +309,9 @@ const UserLayout = ({ children }) => {
           <div className="p-4 border-t border-slate-100 bg-gradient-to-b from-transparent to-slate-50/50">
             <button 
               onClick={() => setShowLogoutModal(true)}
-              className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-500 hover:bg-rose-50 hover:text-rose-600 transition-all font-bold text-sm group hover:scale-[1.02] duration-200"
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-500 hover:bg-rose-50 hover:text-rose-600 transition-all font-bold text-sm group hover:scale-[1.02] duration-200 cursor-pointer"
             >
-              <FaSignOutAlt className="text-slate-400 transition-colors group-hover:text-rose-500" /> 
+              <FaSignOutAlt className="cursor-pointer text-slate-400 transition-colors group-hover:text-rose-500" /> 
               Logout
             </button>
           </div>
