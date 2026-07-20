@@ -1,6 +1,5 @@
-
- import axios from 'axios';
- import React from 'react';
+import axios from 'axios';
+ import React ,{useState}from 'react';
 import { motion } from 'framer-motion';
 import { ShoppingBag, ArrowRight } from 'lucide-react';
 import validateCheckout from '../utils/validatesCheckout';
@@ -9,6 +8,7 @@ import Swal from 'sweetalert2';
 import { useNavigate } from "react-router-dom";
 
 const OrderSummary = ({ Step, checkoutData }) => {
+    const [isConfirm,setIsConfirm] = useState(false);
     const API_URL = import.meta.env.VITE_API_URL;
     const navigate = useNavigate();
     const items = checkoutData.items || [];
@@ -21,83 +21,66 @@ const OrderSummary = ({ Step, checkoutData }) => {
 
     const grandTotal = subtotal + deliveryFee;
 
-const IS_DEV_MODE = true;
+
+
  const handleConfirm = async () => {
+
+    if(isConfirm)return;
     const result = validateCheckout();
     if (!result.success) {
         Swal.fire("Error", result.message, "error");
         return;
     }
-
-    // 1. Define orderData FIRST so it's available everywhere
+ setIsConfirm(true);
+    // 2. Prepare the payload to match your MongoDB Schema
     const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    const selectedAddress = checkoutData.address || {};
+    const formattedAddress = [
+        selectedAddress.addressLine1 || selectedAddress.address,
+        selectedAddress.watermark,
+        selectedAddress.city,
+        selectedAddress.state,
+        selectedAddress.pincode
+    ].filter(Boolean).join(", ");
+    
     const orderData = {
-        userId: currentUser?._id || currentUser?.id || "guest",
-        customerName: `${currentUser?.FirstName || ""} ${currentUser?.LastName || ""}`.trim(),
+        userId: currentUser?._id || currentUser?.id || currentUser?.user?._id || "guest",
+        customerName: `${currentUser?.FirstName || ""} ${currentUser?.LastName || ""}`,
         email: currentUser?.Email || currentUser?.email || "",
-        phone: checkoutData.address?.phone || currentUser?.phone || "",
-        address: [checkoutData.address?.addressLine1, checkoutData.address?.city, checkoutData.address?.pincode].filter(Boolean).join(", "),
+        phone: selectedAddress?.phone || currentUser?.phone || currentUser?.number || "",
         items: checkoutData.items,
         totalAmount: grandTotal,
+        address: formattedAddress || selectedAddress?.address || "",
         paymentMethod: checkoutData.payment?.method || "cod",
-        pickupDate: checkoutData.schedule?.date,
-        pickupTimeSlot: checkoutData.schedule?.slot,
-        deliveryDate: checkoutData.schedule?.deliveryDate,
-        deliveryTimeSlot: checkoutData.schedule?.deliveryTimeSlot
-    };
 
-    // 2. NOW you can use it in the dev mode check
-    const IS_DEV_MODE = false;
-    if (IS_DEV_MODE) {
-        console.log("Running in DEV MODE - Skipping Razorpay");
-        saveOrderToDb(orderData); // This will now work
-        return;
-    }
+        deliveryDate: checkoutData.schedule?.deliveryDate || "",
+    deliveryTimeSlot: checkoutData.schedule?.deliveryTimeSlot || "",
+    pickupDate: checkoutData.schedule?.date || "", // Optional: if you need this too
+    pickupTimeSlot: checkoutData.schedule?.slot || ""
+    }; 
 
-    // 3. Rest of your payment logic
-    if (checkoutData.payment?.method === "cod") {
-        saveOrderToDb(orderData);
-    } else {
-        try {
-            const { data: order } = await axios.post(`${API_URL}/api/payment/create-order`, { 
-                amount: Math.round(grandTotal) 
-            });
+    try {
+        // 3. Send to backend
+        const response = await axios.post(`${API_URL}/api/orders`, orderData);
+        
+        const swalResult = await Swal.fire({
+            icon: "success",
+            title: "Booking Successful!",
+            text: response.data?.message || "Your booking has been submitted to our database.",
+            confirmButtonText: "Continue",
+            confirmButtonColor: "#06b6d4",
+        });
 
-            const options = {
-                key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-                amount: order.amount,
-                currency: "INR",
-                name: "Athenura",
-                order_id: order.id,
-                handler: async function (response) {
-                    saveOrderToDb({ ...orderData, paymentId: response.razorpay_payment_id });
-                },
-                prefill: {
-                    name: orderData.customerName,
-                    email: orderData.email,
-                    contact: orderData.phone,
-                },
-                remember_customer: false,
-            };
-            const razor = new window.Razorpay(options);
-            razor.open();
-        } catch (err) {
-            console.error("Payment error:", err.response?.data || err);
-            Swal.fire("Error", "Payment initiation failed. Please try again.", "error");
+        if (swalResult.isConfirmed) {
+            localStorage.removeItem("checkoutData"); // Clear the local storage
+            navigate("/user-orders");
         }
+    } catch (error) {
+        setIsConfirm(false);
+        Swal.fire("Error", error.response?.data?.message || "Could not save order. Please try again.", "error");
+        console.error(error);
     }
 };
-
-  const saveOrderToDb = async (finalData) => {
-    try {
-      const response = await axios.post(`${API_URL}/api/orders`, finalData);
-      Swal.fire("Success", "Booking Successful!", "success");
-      localStorage.removeItem("checkoutData");
-      navigate("/user-orders");
-    } catch (error) {
-      Swal.fire("Error", "Could not save order", "error");
-    }
-  };
 
     return (
         <motion.div
@@ -146,10 +129,13 @@ const IS_DEV_MODE = true;
                     {Step === 4 && (
                         <button
                             onClick={handleConfirm}
-                            className="w-full flex justify-center items-center gap-2 rounded-xl bg-blue-900 py-3 text-white font-semibold hover:bg-blue-800 transition"
-                        >
-                            {checkoutData.payment?.method === "cod" ? "Confirm Booking" : "Proceed to Pay"}
-                            <ArrowRight size={18} />
+                            disabled={isConfirm}
+                            className={`w-full flex justify-center items-center gap-2 rounded-xl bg-blue-900 py-3 text-white font-semibold hover:bg-blue-800 transition
+                             ${isConfirm ?  "bg-gray-400 cursor-not-allowed": "bg-blue-900 hover:bg-blue-800"}`} >
+                            {isConfirm ? "Processing..." :
+                            checkoutData.payment?.method === "cod" 
+                            ? "Confirm Booking" : "Proceed to Pay"}
+                          { !isConfirm && <ArrowRight size={18} />}
                         </button>
                     )}
                 </div>
