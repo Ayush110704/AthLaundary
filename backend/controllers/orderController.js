@@ -42,7 +42,9 @@ const generateOrderId = () => {
 
         if (paymentMethod === 'upi' || paymentMethod === 'card') {
             computedPaymentStatus = 'Paid';
-            computedTransactionId = paymentId || `TXN${Date.now()}${Math.floor(Math.random() * 10000)}`;
+            computedTransactionId = (paymentId && paymentId.trim() !== '') 
+                ? paymentId 
+                : `TXN${Date.now()}${Math.floor(Math.random() * 10000)}`;
         }
 
         console.log("Pre-Save Order Debug:", { paymentMethod, paymentId, computedTransactionId, computedPaymentStatus });

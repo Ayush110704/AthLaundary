@@ -80,6 +80,7 @@ const IS_DEV_MODE = true;
                 name: "Athenura",
                 order_id: order.id,
                 handler: async function (response) {
+                    console.log("RAW Razorpay response:", response);
                     saveOrderToDb({ ...orderData, paymentId: response.razorpay_payment_id });
                 },
                 prefill: {

@@ -157,6 +157,7 @@ const mapOrderToBooking = (order, index) => {
     notes: order.notes || '',
     paymentStatus,
     paymentMethod: normalizedPaymentMethod.toUpperCase() === 'COD' ? 'COD' : normalizedPaymentMethod,
+    transactionId: order.transactionId || null,
     statusUpdateHistory: order.statusUpdateHistory || []
   };
 };
