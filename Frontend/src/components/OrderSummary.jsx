@@ -99,6 +99,7 @@ const IS_DEV_MODE = true;
 };
 
   const saveOrderToDb = async (finalData) => {
+    console.log("Sending order with paymentId:", finalData.paymentId);
     try {
       const response = await axios.post(`${API_URL}/api/orders`, finalData);
       Swal.fire("Success", "Booking Successful!", "success");
