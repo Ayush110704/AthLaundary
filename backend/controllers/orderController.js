@@ -45,6 +45,8 @@ const generateOrderId = () => {
             computedTransactionId = paymentId || `TXN${Date.now()}${Math.floor(Math.random() * 10000)}`;
         }
 
+        console.log("Pre-Save Order Debug:", { paymentMethod, paymentId, computedTransactionId, computedPaymentStatus });
+
         const order = await Order.create({
             orderId,
             userId,
