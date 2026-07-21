@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
-  PieChart, Pie, Cell, LineChart, Line
+  LineChart, Line
 } from 'recharts';
 import { 
   Users, 
@@ -19,7 +19,9 @@ import {
 const AdminDashboard = () => { 
   const navigate = useNavigate();
   const [adminName, setAdminName] = useState('Admin');
+  const [adminEmail, setAdminEmail] = useState('');
   const [loginActivities, setLoginActivities] = useState([]);
+  const [currentDate, setCurrentDate] = useState('');
 
   // Check if admin is logged in and get data from localStorage
   useEffect(() => {
@@ -30,63 +32,68 @@ const AdminDashboard = () => {
       return;
     }
 
-    setAdminName(session.fullName || 'Admin');
+    const name = session.fullName || session.name || 'Admin';
+    const email = session.email || '';
+    setAdminName(name);
+    setAdminEmail(email);
 
-    // Load login activities from localStorage
-    loadLoginActivities(session);
+    // Set dynamic current date & time for welcome banner
+    const updateDateTime = () => {
+      setCurrentDate(new Date().toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      }) + ' ' + new Date().toLocaleTimeString());
+    };
+    updateDateTime();
+    const interval = setInterval(updateDateTime, 1000);
+
+    // Record this session login and load the history of all unique/historical admin logins
+    recordAndLoadAllAdminLogins(name, email);
+
+    return () => clearInterval(interval);
   }, [navigate]);
 
-  // Load login activities from localStorage
-  const loadLoginActivities = (session) => {
-    const storedActivities = JSON.parse(localStorage.getItem('adminLoginActivities') || '[]');
-    
-    // If no activities exist, create default one with current login
-    if (storedActivities.length === 0) {
-      const initials = session.fullName ? 
-        session.fullName.split(' ').map(word => word[0]).join('').toUpperCase().slice(0, 2) : 
-        'AD';
-      
-      const defaultActivity = {
-        id: Date.now(),
-        initials: initials,
-        name: session.fullName || 'Admin',
-        action: 'Logged in to admin dashboard',
-        time: 'Just now',
-        timestamp: new Date().toISOString()
-      };
-      localStorage.setItem('adminLoginActivities', JSON.stringify([defaultActivity]));
-      setLoginActivities([defaultActivity]);
-    } else {
-      setLoginActivities(storedActivities);
-    }
-  };
+  // Append every login session to maintain a full history of all admins who logged in
+  const recordAndLoadAllAdminLogins = (currentName, currentEmail) => {
+    let storedActivities = JSON.parse(localStorage.getItem('adminLoginActivities') || '[]');
+    const initials = currentName !== 'Admin' ? 
+      currentName.split(' ').map(word => word[0]).join('').toUpperCase().slice(0, 2) : 
+      'AD';
 
-  // Add admin login activity
-  const addLoginActivity = (action) => {
-    const activities = JSON.parse(localStorage.getItem('adminLoginActivities') || '[]');
-    const session = JSON.parse(localStorage.getItem('adminSession'));
-    
-    if (session) {
-      const initials = session.fullName ? 
-        session.fullName.split(' ').map(word => word[0]).join('').toUpperCase().slice(0, 2) : 
-        'AD';
-      
+    const now = new Date();
+
+    // Check if the very last recorded activity is identical and within the last 30 seconds 
+    // to avoid flooding duplicates on a simple page refresh, while tracking new distinct logins.
+    const lastActivity = storedActivities[0];
+    const isRecentDuplicate = lastActivity && 
+      lastActivity.name === currentName && 
+      lastActivity.email === currentEmail && 
+      (now - new Date(lastActivity.timestamp) < 30000);
+
+    if (!isRecentDuplicate) {
       const newActivity = {
         id: Date.now(),
         initials: initials,
-        name: session.fullName || 'Admin',
-        action: action,
-        time: 'Just now',
-        timestamp: new Date().toISOString()
+        name: currentName,
+        email: currentEmail,
+        action: 'Logged in to admin dashboard',
+        timestamp: now.toISOString()
       };
       
-      activities.unshift(newActivity);
-      if (activities.length > 50) {
-        activities.pop();
+      // Push new login activity to the front of the list
+      storedActivities = [newActivity, ...storedActivities];
+      
+      // Keep up to 100 historical login records
+      if (storedActivities.length > 100) {
+        storedActivities.pop();
       }
-      localStorage.setItem('adminLoginActivities', JSON.stringify(activities));
-      setLoginActivities(activities);
+      
+      localStorage.setItem('adminLoginActivities', JSON.stringify(storedActivities));
     }
+
+    setLoginActivities(storedActivities);
   };
 
   // Real revenue data for weekly revenue
@@ -123,8 +130,6 @@ const AdminDashboard = () => {
     { name: 'Jun', revenue: 98000 },
   ];
 
-  const COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444'];
-
   // Quick Actions Data  
   const quickActions = [
     { id: 1, icon: Users, label: 'User Management', color: 'bg-blue-500', path: '/admin-dashboard/user-management' },
@@ -147,13 +152,6 @@ const AdminDashboard = () => {
     greeting = 'Good Evening';
   }
 
-  const currentDate = new Date().toLocaleDateString('en-US', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  });
-
   // Custom tooltip for charts
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
@@ -173,25 +171,22 @@ const AdminDashboard = () => {
 
   // Get initials from name
   const getInitials = (name) => {
-    if (!name) return 'AD';
+    if (!name || name === 'Admin') return 'AD';
     return name.split(' ').map(word => word[0]).join('').toUpperCase().slice(0, 2);
   };
 
-  // Format time
+  // Format real-time timestamp
   const formatTime = (timestamp) => {
     if (!timestamp) return 'Just now';
     const date = new Date(timestamp);
-    const now = new Date();
-    const diffMs = now - date;
-    const diffMins = Math.floor(diffMs / 60000);
-    const diffHours = Math.floor(diffMs / 3600000);
-    const diffDays = Math.floor(diffMs / 86400000);
-
-    if (diffMins < 1) return 'Just now';
-    if (diffMins < 60) return `${diffMins} min ago`;
-    if (diffHours < 24) return `${diffHours} hr ago`;
-    if (diffDays < 7) return `${diffDays} days ago`;
-    return date.toLocaleDateString();
+    return date.toLocaleString('en-US', {
+      month: 'numeric',
+      day: 'numeric',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    });
   };
 
   return (
@@ -208,6 +203,11 @@ const AdminDashboard = () => {
             <h2 className="text-2xl font-bold">
               {greeting}, {adminName}!
             </h2>
+            {adminEmail && (
+              <p className="text-blue-100 text-sm mt-0.5 opacity-90">
+                Email: {adminEmail}
+              </p>
+            )}
             <p className="text-blue-100 mt-1">
               Welcome back to your LaundryHub dashboard. Here's what's happening with your business today.
             </p>
@@ -230,10 +230,10 @@ const AdminDashboard = () => {
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <Clock size={20} className="text-blue-600" />
-                <h3 className="text-lg font-semibold text-gray-800">Admin Login Activity</h3>
+                <h3 className="text-lg font-semibold text-gray-800">Admin Login Activity History</h3>
               </div>
               <span className="text-xs text-gray-400">
-                {loginActivities.length} activities
+                {loginActivities.length} total sessions
               </span>
             </div>
 
@@ -253,7 +253,8 @@ const AdminDashboard = () => {
                       </div>
                       <div>
                         <p className="text-sm text-gray-800">
-                          <span className="font-medium">{activity.name}</span>
+                          <span className="font-semibold text-gray-900">{activity.name}</span>
+                          {activity.email && <span className="text-gray-400 text-xs ml-1">({activity.email})</span>}
                           <span className="text-gray-500 ml-1">{activity.action}</span>
                         </p>
                         {activity.timestamp && (
@@ -265,13 +266,13 @@ const AdminDashboard = () => {
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="text-xs text-gray-400">
-                        {activity.time || formatTime(activity.timestamp)}
+                        {formatTime(activity.timestamp)}
                       </span>
                     </div>
                   </motion.div>
                 ))
               ) : (
-                <p className="text-gray-400 text-sm text-center py-4">No admin login activities yet</p>
+                <p className="text-gray-400 text-sm text-center py-4">No admin login activities recorded yet</p>
               )}
             </div>
           </div>
@@ -350,39 +351,6 @@ const AdminDashboard = () => {
             Showing revenue for the current week
           </div>
         </div>
-
-        {/* Service Distribution */}
-        {/* <div className="bg-white rounded-xl shadow-sm p-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">Service Distribution</h3>
-          <div className="flex justify-center">
-            <ResponsiveContainer width="100%" height={400}>
-              <PieChart>
-                <Pie
-                  data={serviceDistribution}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  label={({ name, percent, cx, cy, midAngle, innerRadius, outerRadius, index }) => {
-                    const RADIAN = Math.PI / 180;
-                    const radius = outerRadius * 0.6;
-                    const x = cx + radius * Math.cos(-midAngle * RADIAN);
-                    const y = cy + radius * Math.sin(-midAngle * RADIAN);
-                    return `${(percent * 100).toFixed(0)}%`;
-                  }}
-                  outerRadius={130}
-                  fill="#8884d8"
-                  dataKey="value"
-                  paddingAngle={2}
-                >
-                  {serviceDistribution.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip formatter={(value) => `${value}%`} />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-        </div> */}
       </div>
 
       {/* Monthly Trend */}
