@@ -92,56 +92,7 @@ useEffect(() => {
     
   </div>
 
-  <AnimatePresence>
-    {openSection === "card" && (
-      <motion.div
-        initial={{ height: 0, opacity: 0 }}
-        animate={{ height: "auto", opacity: 1 }}
-        exit={{ height: 0, opacity: 0 }}
-        transition={{ duration: 0.3 }}
-        className="overflow-hidden"
-      >
-        <div className="p-4 space-y-4">
-          <input
-  type="text"
-  name="cardNumber"
-  value={paymentData.cardNumber}
-  onChange={handleChange}
-  placeholder="Card Number"
-  className="w-full border rounded-lg p-3"
-/>
-
-          <input
-  type="text"
-  name="cardHolder"
-  value={paymentData.cardHolder}
-  onChange={handleChange}
-  placeholder="Card Holder Name"
-  className="w-full border rounded-lg p-3"
-/>
-
-          <div className="grid grid-cols-2 gap-4">
-          <input
-  type="text"
-  name="expiry"
-  value={paymentData.expiry}
-  onChange={handleChange}
-  placeholder="MM/YY"
-  className="border rounded-lg p-3"
-/>
-            <input
-  type="password"
-  name="cvv"
-  value={paymentData.cvv}
-  onChange={handleChange}
-  placeholder="CVV"
-  className="border rounded-lg p-3"
-/>
-          </div>
-        </div>
-      </motion.div>
-    )}
-  </AnimatePresence>
+ 
 
 </div>
 
@@ -171,33 +122,10 @@ useEffect(() => {
       </span>
     </div>
 
-  
-  
 </button>
  
 
-  <AnimatePresence>
-    {openSection === "upi" && (
-      <motion.div
-        initial={{ height: 0, opacity: 0 }}
-        animate={{ height: "auto", opacity: 1 }}
-        exit={{ height: 0, opacity: 0 }}
-        transition={{ duration: 0.3 }}
-        className="overflow-hidden"
-      >
-        <div className="p-4">
-          <input
-  type="text"
-  name="upiId"
-  value={paymentData.upiId}
-  onChange={handleChange}
-  placeholder="Enter UPI ID"
-  className="w-full border rounded-lg p-3"
-/>
-        </div>
-      </motion.div>
-    )}
-  </AnimatePresence>
+  
 </div>
 
           {/* COD */}
