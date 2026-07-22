@@ -341,36 +341,14 @@ function UserDetailView({ user, onBack, onEdit }) {
                 <p className="text-xs text-gray-500">Completed</p>
                 <p className="text-xl font-bold text-green-600">{user.completedBookings || 0}</p>
               </div>
-              <div className="p-3 bg-red-50 rounded-lg">
-                <p className="text-xs text-gray-500">Cancelled</p>
-                <p className="text-xl font-bold text-red-600">{user.cancelledBookings || 0}</p>
-              </div>
+             
               <div className="p-3 bg-purple-50 rounded-lg">
                 <p className="text-xs text-gray-500">Total Spent</p>
                 <p className="text-xl font-bold text-purple-600">{user.totalSpent || '₹0'}</p>
               </div>
             </div>
 
-            {/* Rating & Feedback */}
-            <div className="space-y-3">
-              <div className="p-3 bg-yellow-50 rounded-lg">
-                <p className="text-xs text-gray-500">Rating</p>
-                <div className="flex items-center gap-2">
-                  <Star className="w-5 h-5 text-yellow-500 fill-current" />
-                  <span className="text-lg font-bold text-gray-800">{user.rating || 'N/A'}</span>
-                  <span className="text-xs text-gray-500">/ 5.0</span>
-                </div>
-              </div>
-              <div className="p-3 bg-gray-50 rounded-lg">
-                <p className="text-xs text-gray-500">Preferred Service</p>
-                <p className="text-sm font-medium text-gray-800">{user.preferredService || 'N/A'}</p>
-              </div>
-              <div className="p-3 bg-gray-50 rounded-lg">
-                <p className="text-xs text-gray-500">Feedback</p>
-                <p className="text-sm text-gray-700 italic">"{user.feedback || 'No feedback yet'}"</p>
-              </div>
-            </div>
-
+           
             
           </div>
         </div>
