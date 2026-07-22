@@ -2,10 +2,11 @@ import axios from 'axios';
 import React, { useState, useCallback, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Eye, EyeOff, Mail, Lock, Shield, Headphones, Zap } from "lucide-react";
-import logo from '../assets/Athenura.png';
+import WhiteLogo from '../assets/WhiteLogo.png';
 import { Link, useNavigate } from 'react-router-dom';
 import Image from '../assets/LoginImage.jpeg';
 import Swal from 'sweetalert2';
+
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -216,7 +217,7 @@ const Login = () => {
       >
         <div className="grid lg:grid-cols-2 overflow-hidden rounded-3xl bg-white shadow-2xl">
           {/* Left Side - Decorative */}
-          <div className="hidden lg:flex relative bg-blue-950 p-14 text-white flex-col justify-between overflow-hidden">
+          <div className="hidden lg:flex relative bg-blue-950 p-10 text-white flex-col justify-between overflow-hidden">
             <img
               src={Image}
               className="absolute inset-0 w-full h-full object-cover opacity-20"
@@ -224,8 +225,8 @@ const Login = () => {
             />
             
             <div className="relative z-10">
-              <div className="flex items-center gap-3 mb-8">
-                <img src={logo} alt="Athenura" className="h-10" />
+              <div className="flex ">
+                <img src={WhiteLogo} alt="Athenura" className="h-25 w-40" />
               </div>
               
               <h1 className="text-5xl font-bold leading-tight">
