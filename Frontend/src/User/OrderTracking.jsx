@@ -261,7 +261,7 @@ const Tracking1 = () => {
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: .2 }}
-                    className="text-5xl lg:text-6xl font-extrabold leading-tight"
+                   className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight"
                   >
 
                     Track Your
@@ -280,7 +280,7 @@ const Tracking1 = () => {
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: .5 }}
-                    className="mt-7 text-lg text-gray-600 leading-8 max-w-xl"
+                    className="mt-6 text-base sm:text-lg text-gray-600 leading-7 sm:leading-8 max-w-xl"
                   >
 
                     Stay updated with every stage of your laundry order —
@@ -300,7 +300,7 @@ const Tracking1 = () => {
                     repeat: Infinity,
                     duration: 3,
                   }}
-                  className=" hidden md:flex justify-center"
+              className="hidden lg:flex justify-center"
                 >
 
                   <div className="relative">
@@ -362,7 +362,7 @@ const Tracking1 = () => {
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl p-8 lg:p-10"
+              className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl p-5 sm:p-8 lg:p-10"
             >
 
               <h2 className="text-3xl font-bold text-center text-[#0f3d7a]">
@@ -379,7 +379,7 @@ const Tracking1 = () => {
 
               <div className="mt-10">
 
-                <div className="grid lg:grid-cols-[2fr_2fr_1.2fr] gap-6 items-start">
+                <div className="grid grid-cols-1 lg:grid-cols-[2fr_2fr_1.2fr] gap-5 items-start">
 
                   {/* Mobile */}
 
@@ -504,7 +504,7 @@ const Tracking1 = () => {
 
                   <div className="absolute -bottom-24 -left-20 w-72 h-72 bg-cyan-300/20 rounded-full blur-3xl"></div>
 
-                  <div className="relative grid lg:grid-cols-1 gap-10 p-10">
+                  <div className="relative grid gap-8 p-5 sm:p-8 lg:p-10">
 
                     <div>
 
@@ -514,7 +514,7 @@ const Tracking1 = () => {
 
                       </span>
 
-                      <h1 className="text-5xl font-bold text-white mt-8">
+                      <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mt-6">
 
                         {getStatusLabel(trackingOrder?.status)}
 
@@ -526,7 +526,7 @@ const Tracking1 = () => {
 
                       </p>
 
-                      <div className="grid grid-cols-2 gap-5 mt-10">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
 
                         <div className="bg-white/10 backdrop-blur-md rounded-2xl p-5">
 
@@ -644,10 +644,11 @@ const Tracking1 = () => {
 
                 <div className="relative">
 
-                  <div className="absolute left-0 right-0 top-6 h-1 bg-gray-300 rounded-full"></div>
+                 <div className="hidden sm:block absolute left-0 right-0 top-6 h-1 bg-gray-300 rounded-full"></div>
 
                   <div
-                    className="absolute left-0 top-6 h-1 bg-green-500 rounded-full"
+                     className="hidden sm:block absolute left-0 top-6 h-1 bg-green-500 rounded-full"
+
                     style={{
                       width: `${
                         ((progressSteps.findIndex(
@@ -659,7 +660,7 @@ const Tracking1 = () => {
                     }}
                   ></div>
 
-                  <div className="grid grid-cols-5 relative">
+                  <div className="hidden sm:grid grid-cols-5 relative">
 
                     {progressSteps.map((step, index) => (
 
@@ -667,6 +668,8 @@ const Tracking1 = () => {
                         key={index}
                         className="flex flex-col items-center"
                       >
+
+                        
 
                         <motion.div
 
@@ -759,11 +762,92 @@ const Tracking1 = () => {
 
                         </p>
 
+
+
+
+
+
+
+                        
+
                       </div>
 
                     ))}
 
                   </div>
+
+
+
+
+
+                  {/* Mobile Vertical Timeline */}
+<div className="flex flex-col gap-6 sm:hidden mt-6">
+  {progressSteps.map((step, index) => (
+    <div key={index} className="flex items-start gap-4 relative">
+
+      {index !== progressSteps.length - 1 && (
+        <div
+          className={`absolute left-5 top-10 w-1 h-16 ${
+            step.status === "completed" || step.status === "current"
+              ? "bg-green-500"
+              : "bg-gray-300"
+          }`}
+        />
+      )}
+
+      <motion.div
+        animate={
+          step.status === "current"
+            ? { scale: [1, 1.15, 1] }
+            : {}
+        }
+        transition={{
+          repeat: Infinity,
+          duration: 1.2,
+        }}
+        className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 z-10
+          ${
+            step.status === "completed"
+              ? "bg-green-500 text-white"
+              : step.status === "current"
+              ? "bg-blue-600 text-white shadow-lg"
+              : "bg-gray-200 text-gray-500"
+          }`}
+      >
+        {step.icon}
+      </motion.div>
+
+      <div className="pb-8">
+        <h3
+          className={`font-semibold ${
+            step.status === "completed"
+              ? "text-gray-900"
+              : step.status === "current"
+              ? "text-blue-600"
+              : "text-gray-500"
+          }`}
+        >
+          {step.title}
+        </h3>
+
+        <p
+          className={`text-sm mt-1 ${
+            step.status === "completed"
+              ? "text-green-600"
+              : step.status === "current"
+              ? "text-blue-600"
+              : "text-gray-500"
+          }`}
+        >
+          {step.status === "completed" && "Completed"}
+          {step.status === "current" && "In Progress"}
+          {step.status === "pending" && "Pending"}
+        </p>
+      </div>
+
+    </div>
+  ))}
+</div>
 
                 </div>
 
@@ -771,7 +855,13 @@ const Tracking1 = () => {
 
             </motion.div>
 
+
+
+
           )}
+
+
+          
 
           {/* ACTION BUTTONS  */}
 
