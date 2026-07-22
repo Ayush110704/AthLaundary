@@ -126,23 +126,47 @@ export const forgotPassword = async (req, res) => {
         if (!email) {
             return res.status(400).json({ success: false, message: "Email is required" });
         }
+
+        if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+            console.error("Forgot password error: EMAIL_USER or EMAIL_PASS is missing in environment variables");
+            return res.status(500).json({ success: false, message: "Email service is not configured on server" });
+        }
+
         const user = await User.findOne({ email: email.trim() });
         if (!user) return res.status(404).json({ success: false, message: "User not found with this email address" });
 
         // Generate a reset token valid for 15 minutes
         const resetToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '15m' });
 
-        // Setup Email (Use a service like Gmail/Mailtrap)
+        // Setup Email Transporter with family: 4 to force IPv4 (prevents ENETUNREACH on cloud services like Render)
         const transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS }
+            host: 'smtp.gmail.com',
+            port: 465,
+            secure: true,
+            auth: { 
+                user: process.env.EMAIL_USER.trim(), 
+                pass: process.env.EMAIL_PASS.trim() 
+            },
+            family: 4
         });
 
+        const clientUrl = process.env.CLIENT_URL || req.headers.origin || 'https://ath-laundary.vercel.app';
+        const resetUrl = `${clientUrl.replace(/\/+$/, '')}/reset-password/${resetToken}`;
+
         const mailOptions = {
-            from: process.env.EMAIL_USER,
+            from: `"AthLaundry" <${process.env.EMAIL_USER}>`,
             to: user.email,
-            subject: 'Password Reset',
-            text: `Click here to reset your password: http://localhost:5173/reset-password/${resetToken}`
+            subject: 'Password Reset - AthLaundry',
+            text: `Click here to reset your password: ${resetUrl}`,
+            html: `
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; rounded: 10px;">
+                    <h2 style="color: #1e3a8a;">Reset Your Password</h2>
+                    <p>You requested a password reset for your AthLaundry account.</p>
+                    <p>Click the button below to set a new password. This link is valid for 15 minutes:</p>
+                    <a href="${resetUrl}" style="display: inline-block; padding: 12px 24px; background-color: #1e3a8a; color: #ffffff; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 15px 0;">Reset Password</a>
+                    <p style="color: #666; font-size: 12px;">If you didn't request this, you can safely ignore this email.</p>
+                </div>
+            `
         };
 
         await transporter.sendMail(mailOptions);
