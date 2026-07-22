@@ -6,46 +6,26 @@ import {
   ChevronRight,
   Mail,
   CheckCircle,
-  AlertCircle,
   Clock,
-  Users,
   User,
   ShoppingBag,
   Phone,
   MapPin,
   Calendar,
   CalendarX,
-  Filter,
   X,
-  Download,
   RefreshCw,
-  ChevronDown,
-  ChevronUp,
   Package,
   Truck,
   Check,
   XCircle,
-  AlertTriangle,
-  Plus,
-  Edit,
-  Trash2,
-  Shirt,
-  Sofa,
-  Clover,
-  Ban,
   CreditCard,
   Wallet,
   Building,
-  RotateCcw,
-  IndianRupee,
-  MessageSquare,
-  ArrowRight,
-  ShoppingCart,
-  Scissors,
+  Shirt,
   Sparkles,
   Send,
-  CheckCheck,
-  CalendarDays
+  CheckCheck
 } from 'lucide-react';
 
 
@@ -96,19 +76,7 @@ const OrderProvider = ({ children }) => {
   );
 };
 
-// HELPER FUNCTIONS FOR DYNAMIC DATES
-
-const getDate = (daysAgo) => {
-  const date = new Date();
-  date.setDate(date.getDate() - daysAgo);
-  return date.toISOString();
-};
-
-const getFutureDate = (daysFromNow) => {
-  const date = new Date();
-  date.setDate(date.getDate() + daysFromNow);
-  return date.toISOString();
-};
+// HELPER FUNCTIONS
 
 const mapAdminOrderStatus = (status) => {
   const normalized = String(status || '').trim().toLowerCase();
@@ -120,8 +88,7 @@ const mapAdminOrderStatus = (status) => {
     cleaning: 'cleaning',
     'out for delivery': 'out_for_delivery',
     out_for_delivery: 'out_for_delivery',
-    completed: 'completed',
-    cancelled: 'cancelled'
+    completed: 'completed'
   };
 
   return statusMap[normalized] || 'pickup';
@@ -162,257 +129,22 @@ const mapOrderToBooking = (order, index) => {
   };
 };
 
-
-// MOCK DATA - Bookings with Items (Dynamic Dates)
-
-const MOCK_BOOKINGS = [
-  {
-    id: 'BK001',
-    customerName: 'Rajesh Kumar',
-    customerEmail: 'rajesh@email.com',
-    customerPhone: '+91 98765 43210',
-    customerAddress: '123, MG Road, Mumbai - 400001',
-    service: 'Dry Cleaning',
-    items: 5,
-    itemsList: [
-      { name: 'Cotton Shirt (White)', quantity: 2, price: 150 },
-      { name: 'Silk Saree', quantity: 1, price: 500 },
-      { name: 'Woolen Blazer', quantity: 1, price: 300 },
-      { name: 'Cotton Trousers', quantity: 1, price: 150 }
-    ],
-    totalAmount: 1250,
-    status: 'completed',
-    bookingDate: getDate(1),
-    pickupDate: getDate(0),
-    deliveryDate: getFutureDate(1),
-    notes: 'Handle with care - silk items',
-    paymentStatus: 'Paid',
-    paymentMethod: 'Online',
-    statusUpdateHistory: []
-  },
-  {
-    id: 'BK002',
-    customerName: 'Priya Sharma',
-    customerEmail: 'priya@email.com',
-    customerPhone: '+91 98765 43211',
-    customerAddress: '456, Lake View, Bangalore - 560001',
-    service: 'Wash & Fold',
-    items: 8,
-    itemsList: [
-      { name: 'T-Shirts', quantity: 4, price: 80 },
-      { name: 'Jeans', quantity: 2, price: 120 },
-      { name: 'Trousers', quantity: 2, price: 100 }
-    ],
-    totalAmount: 800,
-    status: 'processing',
-    bookingDate: getDate(2),
-    pickupDate: getDate(1),
-    deliveryDate: getFutureDate(1),
-    notes: 'Use gentle detergent',
-    paymentStatus: 'Paid',
-    paymentMethod: 'COD',
-    statusUpdateHistory: []
-  },
-  {
-    id: 'BK003',
-    customerName: 'Amit Patel',
-    customerEmail: 'amit@email.com',
-    customerPhone: '+91 98765 43212',
-    customerAddress: '789, Park Street, Delhi - 110001',
-    service: 'Ironing',
-    items: 3,
-    itemsList: [
-      { name: 'Formal Shirts', quantity: 3, price: 150 }
-    ],
-    totalAmount: 450,
-    status: 'pickup',
-    bookingDate: getDate(3),
-    pickupDate: getDate(2),
-    deliveryDate: null,
-    notes: 'Extra starch on shirts',
-    paymentStatus: 'Pending',
-    paymentMethod: 'COD',
-    statusUpdateHistory: []
-  },
-  {
-    id: 'BK004',
-    customerName: 'Sneha Reddy',
-    customerEmail: 'sneha@email.com',
-    customerPhone: '+91 98765 43213',
-    customerAddress: '321, Green Valley, Hyderabad - 500001',
-    service: 'Stain Removal',
-    items: 2,
-    itemsList: [
-      { name: 'White Silk Shirt', quantity: 1, price: 350 },
-      { name: 'Cotton Blouse', quantity: 1, price: 250 }
-    ],
-    totalAmount: 600,
-    status: 'cleaning',
-    bookingDate: getDate(4),
-    pickupDate: getDate(3),
-    deliveryDate: null,
-    notes: 'Red wine stain on white shirt',
-    paymentStatus: 'Paid',
-    paymentMethod: 'Online',
-    statusUpdateHistory: []
-  },
-  {
-    id: 'BK005',
-    customerName: 'Ananya Gupta',
-    customerEmail: 'ananya@email.com',
-    customerPhone: '+91 98765 43215',
-    customerAddress: '987, Coastal Road, Chennai - 600001',
-    service: 'Dry Cleaning',
-    items: 4,
-    itemsList: [
-      { name: 'Wedding Gown', quantity: 1, price: 600 },
-      { name: 'Bridal Dupatta', quantity: 1, price: 200 },
-      { name: 'Embroidered Blouse', quantity: 1, price: 150 },
-      { name: 'Silk Skirt', quantity: 1, price: 150 }
-    ],
-    totalAmount: 1100,
-    status: 'out_for_delivery',
-    bookingDate: getDate(5),
-    pickupDate: getDate(4),
-    deliveryDate: getDate(3),
-    notes: 'Wedding dress - very delicate',
-    paymentStatus: 'Paid',
-    paymentMethod: 'Online',
-    statusUpdateHistory: []
-  },
-  {
-    id: 'BK006',
-    customerName: 'Rahul Verma',
-    customerEmail: 'rahul@email.com',
-    customerPhone: '+91 98765 43216',
-    customerAddress: '147, Garden City, Pune - 411001',
-    service: 'Wash & Fold',
-    items: 10,
-    itemsList: [
-      { name: 'T-Shirts', quantity: 6, price: 80 },
-      { name: 'Jeans', quantity: 2, price: 120 },
-      { name: 'Shirts', quantity: 2, price: 150 }
-    ],
-    totalAmount: 1020,
-    status: 'completed',
-    bookingDate: getDate(6),
-    pickupDate: getDate(5),
-    deliveryDate: getDate(4),
-    notes: 'Separate whites and colors',
-    paymentStatus: 'Paid',
-    paymentMethod: 'Online',
-    statusUpdateHistory: []
-  },
-  {
-    id: 'BK007',
-    customerName: 'Meera Nair',
-    customerEmail: 'meera@email.com',
-    customerPhone: '+91 98765 43217',
-    customerAddress: '258, Temple Road, Kochi - 682001',
-    service: 'Ironing',
-    items: 6,
-    itemsList: [
-      { name: 'Formal Shirts', quantity: 4, price: 150 },
-      { name: 'Trousers', quantity: 2, price: 100 }
-    ],
-    totalAmount: 800,
-    status: 'pickup',
-    bookingDate: getDate(0),
-    pickupDate: getFutureDate(1),
-    deliveryDate: null,
-    notes: 'Need same day delivery',
-    paymentStatus: 'Paid',
-    paymentMethod: 'COD',
-    statusUpdateHistory: []
-  },
-  {
-    id: 'BK008',
-    customerName: 'Arjun Reddy',
-    customerEmail: 'arjun@email.com',
-    customerPhone: '+91 98765 43218',
-    customerAddress: '369, Lake Gardens, Kolkata - 700001',
-    service: 'Stain Removal',
-    items: 1,
-    itemsList: [
-      { name: 'Leather Jacket', quantity: 1, price: 300 }
-    ],
-    totalAmount: 300,
-    status: 'cancelled',
-    bookingDate: getDate(7),
-    pickupDate: getDate(6),
-    deliveryDate: null,
-    notes: 'Oil stain on jacket',
-    paymentStatus: 'Paid',
-    paymentMethod: 'Online',
-    statusUpdateHistory: []
-  },
-  {
-    id: 'BK009',
-    customerName: 'Kavya Menon',
-    customerEmail: 'kavya@email.com',
-    customerPhone: '+91 98765 43219',
-    customerAddress: '741, Hill View, Coimbatore - 641001',
-    service: 'Dry Cleaning',
-    items: 3,
-    itemsList: [
-      { name: 'Silk Saree', quantity: 1, price: 500 },
-      { name: 'Blouse', quantity: 1, price: 150 },
-      { name: 'Dupatta', quantity: 1, price: 100 }
-    ],
-    totalAmount: 750,
-    status: 'completed',
-    bookingDate: getDate(8),
-    pickupDate: getDate(7),
-    deliveryDate: getDate(6),
-    notes: 'Saree - handle carefully',
-    paymentStatus: 'Paid',
-    paymentMethod: 'Online',
-    statusUpdateHistory: []
-  },
-  {
-    id: 'BK010',
-    customerName: 'Vikram Singh',
-    customerEmail: 'vikram@email.com',
-    customerPhone: '+91 98765 43214',
-    customerAddress: '654, Sunrise Colony, Jaipur - 302001',
-    service: 'Wash & Fold',
-    items: 5,
-    itemsList: [
-      { name: 'T-Shirts', quantity: 3, price: 80 },
-      { name: 'Jeans', quantity: 2, price: 120 }
-    ],
-    totalAmount: 480,
-    status: 'processing',
-    bookingDate: getDate(9),
-    pickupDate: getDate(8),
-    deliveryDate: null,
-    notes: 'First time customer',
-    paymentStatus: 'Pending',
-    paymentMethod: 'COD',
-    statusUpdateHistory: []
-  }
-];
-
-
 // STATUS NOTE MODAL COMPONENT WITH TIME PICKER
 
-function StatusNoteModal({ status, onClose, onConfirm, booking }) {
+function StatusNoteModal({ status, onClose, onConfirm }) {
   const [note, setNote] = useState('');
   const [pickupDate, setPickupDate] = useState('');
   const [pickupTime, setPickupTime] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Set default date and time when modal opens
   useEffect(() => {
     if (status === 'pickup') {
       const now = new Date();
       const tomorrow = new Date(now);
       tomorrow.setDate(tomorrow.getDate() + 1);
       
-      // Format date as YYYY-MM-DD
       const dateStr = tomorrow.toISOString().split('T')[0];
-      // Format time as HH:mm
-      const timeStr = '10:00'; // Default to 10 AM
+      const timeStr = '10:00';
       
       setPickupDate(dateStr);
       setPickupTime(timeStr);
@@ -454,13 +186,6 @@ function StatusNoteModal({ status, onClose, onConfirm, booking }) {
       color: 'bg-green-500',
       placeholder: 'Enter completion details (e.g., Delivery confirmed, Customer feedback, etc.)',
       showTimePicker: false
-    },
-    'cancelled': { 
-      label: 'Cancelled', 
-      icon: XCircle, 
-      color: 'bg-red-500',
-      placeholder: 'Enter cancellation reason (e.g., Customer request, Payment issue, etc.)',
-      showTimePicker: false
     }
   };
 
@@ -474,7 +199,6 @@ function StatusNoteModal({ status, onClose, onConfirm, booking }) {
       return;
     }
     
-    // Validate pickup date and time if status is pickup
     if (status === 'pickup') {
       if (!pickupDate) {
         alert('Please select a pickup date');
@@ -513,7 +237,7 @@ function StatusNoteModal({ status, onClose, onConfirm, booking }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 animate-fadeIn">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center p-6 border-b border-gray-200">
           <h2 className="text-xl font-bold flex items-center gap-2 text-gray-800">
@@ -661,15 +385,6 @@ function BookingDetailView({ booking, onBack, onStatusUpdate }) {
       borderColor: 'border-green-500',
       bgColor: 'bg-green-50',
       badgeColor: 'bg-green-100 text-green-800'
-    },
-    'cancelled': { 
-      label: 'Cancelled', 
-      icon: XCircle, 
-      color: 'bg-red-500',
-      textColor: 'text-red-600',
-      borderColor: 'border-red-500',
-      bgColor: 'bg-red-50',
-      badgeColor: 'bg-red-100 text-red-800'
     }
   };
 
@@ -700,15 +415,7 @@ function BookingDetailView({ booking, onBack, onStatusUpdate }) {
   const totalItems = booking.itemsList?.reduce((sum, item) => sum + item.quantity, 0) || 0;
 
   const getDeliveryDisplay = () => {
-    if (booking.status === 'cancelled') {
-      return {
-        icon: Ban,
-        color: 'text-red-500',
-        bgColor: 'bg-red-50',
-        message: 'Delivery Blocked',
-        description: 'Order was cancelled'
-      };
-    } else if (booking.status === 'pickup') {
+    if (booking.status === 'pickup') {
       return {
         icon: Clock,
         color: 'text-yellow-500',
@@ -751,8 +458,7 @@ function BookingDetailView({ booking, onBack, onStatusUpdate }) {
       'processing': { color: 'bg-purple-100 text-purple-800', icon: Package },
       'cleaning': { color: 'bg-indigo-100 text-indigo-800', icon: Sparkles },
       'out_for_delivery': { color: 'bg-orange-100 text-orange-800', icon: Send },
-      'completed': { color: 'bg-green-100 text-green-800', icon: CheckCheck },
-      'cancelled': { color: 'bg-red-100 text-red-800', icon: XCircle }
+      'completed': { color: 'bg-green-100 text-green-800', icon: CheckCheck }
     };
     const { color, icon: Icon } = config[status] || config['pickup'];
     const statusLabels = {
@@ -760,8 +466,7 @@ function BookingDetailView({ booking, onBack, onStatusUpdate }) {
       'processing': 'Processing',
       'cleaning': 'Cleaning',
       'out_for_delivery': 'Out for Delivery',
-      'completed': 'Completed',
-      'cancelled': 'Cancelled'
+      'completed': 'Completed'
     };
     return (
       <span className={`px-2 py-1 inline-flex items-center gap-1 text-xs leading-5 font-semibold rounded-full ${color}`}>
@@ -792,14 +497,12 @@ function BookingDetailView({ booking, onBack, onStatusUpdate }) {
         pickupTime: data.pickupTime || null
       }];
 
-      // Update pickup date if status is pickup
       const updateData = {
         status: pendingStatus,
         statusUpdateHistory: newHistory,
         notes: data.note ? `${booking.notes || ''} | ${data.note}` : booking.notes
       };
 
-      // If status is pickup and we have pickup date/time, update it
       if (pendingStatus === 'pickup' && data.pickupDateTime) {
         updateData.pickupDate = data.pickupDateTime.toISOString();
       }
@@ -824,17 +527,14 @@ function BookingDetailView({ booking, onBack, onStatusUpdate }) {
     }
   };
 
-  // Status options with their labels and icons
   const statusOptions = [
     { value: 'pickup', label: 'Pickup', icon: ShoppingCart, color: 'bg-blue-500' },
     { value: 'processing', label: 'Processing', icon: Package, color: 'bg-purple-500' },
     { value: 'cleaning', label: 'Cleaning', icon: Sparkles, color: 'bg-indigo-500' },
     { value: 'out_for_delivery', label: 'Out for Delivery', icon: Send, color: 'bg-orange-500' },
-    { value: 'completed', label: 'Completed', icon: CheckCheck, color: 'bg-green-500' },
-    { value: 'cancelled', label: 'Cancelled', icon: XCircle, color: 'bg-red-500' }
+    { value: 'completed', label: 'Completed', icon: CheckCheck, color: 'bg-green-500' }
   ];
 
-  // Get status history with notes
   const getStatusHistory = () => {
     const history = booking.statusUpdateHistory || [];
     return history.map(update => ({
@@ -858,12 +558,6 @@ function BookingDetailView({ booking, onBack, onStatusUpdate }) {
             <p className="text-sm text-gray-500">#{booking.id}</p>
           </div>
         </div>
-        {/* <div className="flex gap-2">
-          <button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-sm flex items-center gap-2">
-            <Download className="w-4 h-4" />
-            Invoice
-          </button>
-        </div> */}
       </div>
 
       <div className="p-6">
@@ -984,7 +678,6 @@ function BookingDetailView({ booking, onBack, onStatusUpdate }) {
                   <span className="text-sm font-medium text-gray-800">{booking.paymentMethod}</span>
                 </div>
                 
-                {/* Payment Status with Dropdown - Only Pending and Paid */}
                 <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                   <div className="flex items-center gap-2">
                     <PaymentIcon className="w-4 h-4" />
@@ -1064,7 +757,6 @@ function BookingDetailView({ booking, onBack, onStatusUpdate }) {
         </div>
       </div>
 
-      {/* STATUS BAR AT THE BOTTOM */}
       <div className="border-t border-gray-200 bg-gray-50 p-6">
         <div className="max-w-7xl mx-auto">
           <div className="mb-3">
@@ -1105,7 +797,6 @@ function BookingDetailView({ booking, onBack, onStatusUpdate }) {
             })}
           </div>
 
-          {/* Status History Display */}
           {booking.statusUpdateHistory && booking.statusUpdateHistory.length > 0 && (
             <div className="mt-4">
               <div className="flex items-center gap-2 text-xs text-gray-500 mb-2">
@@ -1133,7 +824,6 @@ function BookingDetailView({ booking, onBack, onStatusUpdate }) {
             </div>
           )}
 
-          {/* Current Status Info */}
           <div className="mt-3 flex items-center gap-3 text-xs text-gray-500">
             <span className="font-medium">Current Status:</span>
             <span className={`px-2 py-0.5 rounded-full font-medium ${currentStatusConfig?.badgeColor || 'bg-gray-100 text-gray-800'}`}>
@@ -1149,11 +839,9 @@ function BookingDetailView({ booking, onBack, onStatusUpdate }) {
         </div>
       </div>
 
-      {/* Status Note Modal */}
       {showStatusNote && pendingStatus && (
         <StatusNoteModal
           status={pendingStatus}
-          booking={booking}
           onClose={() => {
             setShowStatusNote(false);
             setPendingStatus(null);
@@ -1186,8 +874,7 @@ function OrderManagement() {
     'processing': 'Processing',
     'cleaning': 'Cleaning',
     'out_for_delivery': 'Out for Delivery',
-    'completed': 'Completed',
-    'cancelled': 'Cancelled'
+    'completed': 'Completed'
   };
 
   const stats = {
@@ -1197,7 +884,6 @@ function OrderManagement() {
     cleaning: bookings.filter(b => b.status === 'cleaning').length,
     out_for_delivery: bookings.filter(b => b.status === 'out_for_delivery').length,
     completed: bookings.filter(b => b.status === 'completed').length,
-    cancelled: bookings.filter(b => b.status === 'cancelled').length,
     totalRevenue: bookings.reduce((sum, b) => sum + b.totalAmount, 0),
   };
 
@@ -1317,12 +1003,10 @@ function OrderManagement() {
       notes: statusData.note ? `${booking.notes || ''} | ${statusData.note}` : booking.notes
     };
 
-    // If paymentStatus is provided, update it
     if (statusData.paymentStatus) {
       updateData.paymentStatus = statusData.paymentStatus;
     }
 
-    // If status is pickup and we have pickup date, update it
     if (statusData.status === 'pickup' && statusData.pickupDate) {
       updateData.pickupDate = statusData.pickupDate;
     }
@@ -1346,13 +1030,11 @@ function OrderManagement() {
     }
 
     try {
-      // Prepare the payload for the API
       const payload = {
         status: statusData.status,
         note: statusData.note || ''
       };
       
-      // Add paymentStatus to payload if it's being updated
       if (statusData.paymentStatus) {
         payload.paymentStatus = statusData.paymentStatus;
       }
@@ -1381,8 +1063,7 @@ function OrderManagement() {
       'processing': { color: 'bg-purple-100 text-purple-800', icon: Package, label: 'Processing' },
       'cleaning': { color: 'bg-indigo-100 text-indigo-800', icon: Sparkles, label: 'Cleaning' },
       'out_for_delivery': { color: 'bg-orange-100 text-orange-800', icon: Send, label: 'Out for Delivery' },
-      'completed': { color: 'bg-green-100 text-green-800', icon: CheckCheck, label: 'Completed' },
-      'cancelled': { color: 'bg-red-100 text-red-800', icon: XCircle, label: 'Cancelled' }
+      'completed': { color: 'bg-green-100 text-green-800', icon: CheckCheck, label: 'Completed' }
     };
     const { color, icon: Icon, label } = config[status] || config['pickup'];
     return (
@@ -1462,10 +1143,6 @@ function OrderManagement() {
             <p className="text-sm text-gray-500">Completed</p>
             <p className="text-2xl font-bold text-green-600">{stats.completed}</p>
           </div>
-          {/* <div className="bg-white rounded-lg shadow-sm p-4 border-l-4 border-red-500 hover:shadow-md transition">
-            <p className="text-sm text-gray-500">Cancelled</p>
-            <p className="text-2xl font-bold text-red-600">{stats.cancelled}</p>
-          </div> */}
         </div>
 
         <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
@@ -1491,8 +1168,7 @@ function OrderManagement() {
               <option value="Processing">Processing</option>
               <option value="Cleaning">Cleaning</option>
               <option value="Out for Delivery">Out for Delivery</option>
-              <option value="Completed">Completed</option>
-              <option value="Cancelled">Cancelled</option>
+              <option value="Completed">Completed</option> 
             </select>
 
             <select
@@ -1597,20 +1273,47 @@ function OrderManagement() {
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </button>
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                  <button
-                    key={page}
-                    onClick={() => setCurrentPage(page)}
-                    className={`px-3 py-1 border rounded text-sm transition ${
-                      currentPage === page
-                        ? 'bg-blue-600 text-white border-blue-600'
-                        : 'hover:bg-gray-50'
-                    }`}
-                    type="button"
-                  >
-                    {page}
-                  </button>
-                ))}
+                
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page, index, array) => {
+                  const isFirstPage = page === 1;
+                  const isLastPage = page === totalPages;
+                  const isCurrentPage = page === currentPage;
+                  const isNearCurrent = Math.abs(page - currentPage) <= 1;
+                  
+                  if (isFirstPage || isLastPage || isCurrentPage || isNearCurrent) {
+                    return (
+                      <button
+                        key={page}
+                        onClick={() => setCurrentPage(page)}
+                        className={`px-3 py-1 border rounded text-sm transition ${
+                          currentPage === page
+                            ? 'bg-blue-600 text-white border-blue-600'
+                            : 'hover:bg-gray-50'
+                        }`}
+                        type="button"
+                      >
+                        {page}
+                      </button>
+                    );
+                  }
+                  
+                  const prevPage = array[index - 1];
+                  const nextPage = array[index + 1];
+                  const showEllipsis = 
+                    (prevPage && prevPage < currentPage - 1 && page === currentPage - 2) ||
+                    (nextPage && nextPage > currentPage + 1 && page === currentPage + 2);
+                  
+                  if (showEllipsis) {
+                    return (
+                      <span key={`ellipsis-${page}`} className="px-2 py-1 text-gray-400">
+                        …
+                      </span>
+                    );
+                  }
+                  
+                  return null;
+                })}
+                
                 <button
                   onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                   disabled={currentPage === totalPages}
@@ -1627,9 +1330,7 @@ function OrderManagement() {
     </div>
   );
 }
-
-
-// EXPORTS - Only export once at the bottom
+ 
 
 export default OrderManagement;
-export { MOCK_BOOKINGS, useOrders, OrderProvider };
+export { useOrders, OrderProvider };

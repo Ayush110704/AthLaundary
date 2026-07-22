@@ -1,4 +1,4 @@
- import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Search, 
   Eye, 
@@ -47,7 +47,6 @@ function PaymentDetailView({ payment, onBack }) {
   const paymentStatusConfig = {
     'Completed': { color: 'bg-green-100 text-green-800', icon: CheckCircle },
     'Pending': { color: 'bg-yellow-100 text-yellow-800', icon: Clock },
-    'Refunded': { color: 'bg-red-100 text-red-800', icon: AlertTriangle },
     'Failed': { color: 'bg-red-100 text-red-800', icon: XCircle }
   };
 
@@ -55,7 +54,10 @@ function PaymentDetailView({ payment, onBack }) {
     'Completed': { color: 'bg-green-100 text-green-800', icon: CheckCircle },
     'Active': { color: 'bg-blue-100 text-blue-800', icon: Package },
     'Pending': { color: 'bg-yellow-100 text-yellow-800', icon: Clock },
-    'Cancelled': { color: 'bg-red-100 text-red-800', icon: XCircle }
+    'Pickup': { color: 'bg-blue-100 text-blue-800', icon: Package },
+    'Processing': { color: 'bg-purple-100 text-purple-800', icon: Package },
+    'Cleaning': { color: 'bg-indigo-100 text-indigo-800', icon: Package },
+    'Out for Delivery': { color: 'bg-orange-100 text-orange-800', icon: Truck }
   };
 
   const getPaymentMethodIcon = (method) => {
@@ -215,7 +217,7 @@ function PaymentDetailView({ payment, onBack }) {
 function Payments() {
   const { bookings } = useOrders();
   
-  // Helper to extract the proper transaction ID from all possible booking property names shown in your terminal logs
+  // Helper to extract the proper transaction ID from all possible booking property names
   const extractTransactionId = (booking) => {
     return (
       booking.paymentId ||
@@ -235,17 +237,9 @@ function Payments() {
       if (booking.paymentStatus === 'Paid') {
         paymentStatus = 'Completed';
         notes = 'Payment successful';
-      } else if (booking.paymentStatus === 'Refunded') {
-        paymentStatus = 'Refunded';
-        notes = 'Refund processed';
       } else if (booking.paymentStatus === 'Pending') {
         paymentStatus = 'Pending';
         notes = 'Awaiting payment';
-      }
-      
-      if (booking.status === 'Cancelled' && booking.paymentStatus === 'Paid') {
-        paymentStatus = 'Refunded';
-        notes = 'Refund processed due to cancellation';
       }
 
       const txnId = extractTransactionId(booking);
@@ -260,7 +254,7 @@ function Payments() {
         paymentDate: booking.bookingDate,
         paymentMethod: booking.paymentMethod,
         paymentStatus: paymentStatus,
-        transactionId: txnId, // 👉 ADD THIS LINE HERE
+        transactionId: txnId,
         bookingStatus: booking.status,
         service: booking.service,
         items: booking.items,
@@ -268,11 +262,8 @@ function Payments() {
       };
     });
   };
+  
   // State
-  // Change this:
-  // const [payments, setPayments] = useState(generatePaymentsFromBookings());
-
-  // To this:
   const [payments, setPayments] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
@@ -429,8 +420,7 @@ function Payments() {
             >
               <option value="All">All Status</option>
               <option value="Completed">Completed</option>
-              <option value="Pending">Pending</option>
-              <option value="Refunded">Refunded</option>
+              <option value="Pending">Pending</option> 
               <option value="Failed">Failed</option>
             </select>
 
@@ -541,20 +531,47 @@ function Payments() {
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </button>
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                  <button
-                    key={page}
-                    onClick={() => setCurrentPage(page)}
-                    className={`px-3 py-1 border rounded text-sm transition ${
-                      currentPage === page
-                        ? 'bg-blue-600 text-white border-blue-600'
-                        : 'hover:bg-gray-50'
-                    }`}
-                    type="button"
-                  >
-                    {page}
-                  </button>
-                ))}
+                
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page, index, array) => {
+                  const isFirstPage = page === 1;
+                  const isLastPage = page === totalPages;
+                  const isCurrentPage = page === currentPage;
+                  const isNearCurrent = Math.abs(page - currentPage) <= 1;
+                  
+                  if (isFirstPage || isLastPage || isCurrentPage || isNearCurrent) {
+                    return (
+                      <button
+                        key={page}
+                        onClick={() => setCurrentPage(page)}
+                        className={`px-3 py-1 border rounded text-sm transition ${
+                          currentPage === page
+                            ? 'bg-blue-600 text-white border-blue-600'
+                            : 'hover:bg-gray-50'
+                        }`}
+                        type="button"
+                      >
+                        {page}
+                      </button>
+                    );
+                  }
+                  
+                  const prevPage = array[index - 1];
+                  const nextPage = array[index + 1];
+                  const showEllipsis = 
+                    (prevPage && prevPage < currentPage - 1 && page === currentPage - 2) ||
+                    (nextPage && nextPage > currentPage + 1 && page === currentPage + 2);
+                  
+                  if (showEllipsis) {
+                    return (
+                      <span key={`ellipsis-${page}`} className="px-2 py-1 text-gray-400">
+                        …
+                      </span>
+                    );
+                  }
+                  
+                  return null;
+                })}
+                
                 <button
                   onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                   disabled={currentPage === totalPages}
