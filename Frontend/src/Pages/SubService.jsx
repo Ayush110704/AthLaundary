@@ -109,90 +109,126 @@ const SubService = () => {
       <div>
         {/* hero section */}
         <section
-          className="w-full min-h-screen grid grid-cols-1 lg:grid-cols-2 pt-20 md:pt-24"
+  className="w-full  h-[600px] md:min-h-screen grid grid-cols-1 lg:grid-cols-2  md:pt-24"
+  style={{
+    backgroundImage: `url(${Hero.HeroBackground})`,
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
+  }}
+>
+   <div className="flex md:hidden absolute inset-0 md:mt-12 bg-black/60 z-10 h-[600px]"></div>
+        <div className="md:flex hidden absolute inset-0 md:mt-12 bg-white/10 z-10 min-h-screen"></div>
+  {/* Left Content */}
+  <div className="flex items-center justify-center px-5 sm:px-8 lg:px-12 lg:py-0 z-20">
+    <div className="w-full max-w-2xl text-center lg:text-left">
 
-          style={{
-
-            backgroundImage: `url(${Hero.HeroBackground})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            backgroundRepeat: "no-repeat",
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.3 }}
+        variants={{
+          hidden: {},
+          visible: {
+            transition: {
+              staggerChildren: 0.2,
+            },
+          },
+        }}
+      >
+        <motion.h1
+          variants={{
+            hidden: { opacity: 0, y: 30 },
+            visible: {
+              opacity: 1,
+              y: 0,
+              transition: { duration: 0.7 },
+            },
           }}
+         className="font-serif font-bold leading-tight
+text-white
+bg-clip-text text-transparent
+md:bg-none md:text-blue-950 md:text-opacity-100
+text-4xl sm:text-5xl md:text-6xl lg:text-7xl "
         >
-          <div className="flex items-center justify-center px-5 py-10 lg:py-0  w-[700px]">
-            <div className="w-full max-w-xl px-5 md:px-0">
+          {Hero.HeroTitle}
+        </motion.h1>
 
-              <motion.div
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, amount: 0.3 }}
-                variants={{
-                  hidden: {},
-                  visible: {
-                    transition: {
-                      staggerChildren: 0.2,
-                    },
-                  },
-                }}
-              >
+        <motion.h2
+          variants={{
+            hidden: { opacity: 0, y: 30 },
+            visible: {
+              opacity: 1,
+              y: 0,
+              transition: { duration: 0.7 },
+            },
+          }}
+         className="mt-10 md:mt-6 font-serif font-bold
+bg-gradient-to-r from-[#67E8F9] via-[#22D3EE] to-[#acc2f3]
+bg-clip-text text-transparent
+md:bg-none md:text-blue-600
+drop-shadow-lg md:drop-shadow-none
+text-2xl sm:text-3xl md:text-4xl lg:text-5xl">
+          {Hero.HeroSub}
+        </motion.h2>
 
-                <motion.h1
-                  variants={{
-                    hidden: { opacity: 0, y: 30 },
-                    visible: { opacity: 1, y: 0, transition: { duration: 0.7 } },
-                  }}
-                  className="text-4xl md:text-5xl lg:text-7xl  font-bold text-blue-950 font-serif " >
-                  {Hero.HeroTitle}
-                </motion.h1>
+        <motion.p
+          variants={{
+            hidden: { opacity: 0 },
+            visible: {
+              opacity: 1,
+              transition: { duration: 0.8 },
+            },
+          }}
+            className="mt-6 text-md sm:text-md md:text-lg text-white  font-semibold md:font-semibold  md:text-blue-950 leading-5 md:leading-8 max-w-xl">
+        
+          {Hero.HeroPara}
+        </motion.p>
 
-                <motion.h2
-                  variants={{
-                    hidden: { opacity: 0, y: 30 },
-                    visible: { opacity: 1, y: 0, transition: { duration: 0.7 } },
-                  }}
-                  className="text-3xl md:text-4xl lg:text-5xl font-bold text-blue-600 mt-5 md:mt-10 font-serif" >
-                  {Hero.HeroSub}
-                </motion.h2>
+        <motion.button
+                     initial={{ opacity: 0, }}
+                     animate={{ opacity: 1, }}
+                     transition={{ duration: 1.2, delay: 0.9 }}
+                     whileHover={{ scale: 1.04, y: -3 }}
+                     whileTap={{ scale: 0.96 }}
+                     onClick={() => navigate("/checkout")}
+                     className="group relative mt-15 mb-4 overflow-hidden rounded-2xl bg-linear-to-r from-blue-700 via-blue-600 to-cyan-500 px-8 py-4 md:px-10 md:py-5 text-white shadow-lg shadow-blue-600/30 transition-all duration-300 hover:shadow-2xl hover:shadow-cyan-400/20"
+                   >
+                     {/* Shine Effect */}
+                     <span className="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/30 to-transparent transition-transform duration-1000 group-hover:translate-x-full" />
+       
+                     {/* Content */}
+                     <span className="relative z-10 flex items-center gap-3 text-base md:text-lg font-semibold">
+                       Book Pickup
+       
+                       <motion.div
+                         animate={{ x: [0, 6, 0] }}
+                         transition={{
+                           duration: 1.4,
+                           repeat: Infinity,
+                         }}
+                       >
+                         <MoveRight className="h-5 w-5" />
+                       </motion.div>
+                     </span>
+                   </motion.button>
+       
+      </motion.div>
+    </div>
+  </div>
 
-                <motion.p
-                  variants={{
-                    hidden: { opacity: 0 },
-                    visible: { opacity: 1, transition: { duration: 0.8 }, },
-                  }}
-                  className="mt-6 text-base md:text-lg text-gray-700 leading-7" >
-                  {Hero.HeroPara}
-                </motion.p>
-
-                <motion.button
-                  onClick={() => navigate("/checkout")}
-                  variants={{
-                    hidden: { opacity: 0, y: 25 },
-                    visible: { opacity: 1, y: 0, transition: { duration: 0.7 }, },
-                  }}
-                  whileHover={{ y: -3, scale: 1.03, }}
-                  whileTap={{ scale: 0.97, }}
-                  className="mt-8 px-6 py-3 md:px-8 md:py-4 rounded-xl bg-blue-900 text-white font-semibold shadow-xl" >
-                  <span className="flex items-center gap-2">
-                    Book this Service
-                    <motion.div
-                      animate={{ x: [0, 5, 0], }}
-                      transition={{ duration: 1.5, repeat: Infinity, }} >
-                      <MoveRight className="h-5 w-5 mt-1" />
-                    </motion.div>
-                  </span>
-                </motion.button>
-              </motion.div>
-            </div>
-
-          </div>
-          <div className="hidden lg:flex items-center justify-end overflow-hidden">
+  {/* Right Image */}
+  <div className="hidden lg:flex items-center justify-end overflow-hidden">
             <img
               src={Hero.HeroVector}
               alt=""
               className="w-full h-full object-cover -translate-x-16"
             />
-          </div>
-        </section>
+          </div> 
+</section>
+
+
+
 
         {/* types of Service */}
 

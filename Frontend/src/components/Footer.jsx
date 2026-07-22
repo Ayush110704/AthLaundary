@@ -424,7 +424,7 @@ function Footer() {
                   Services
                 </motion.li>
               </Link>
-              <Link to="/TermsCondition">
+              <Link to="/user-terms">
                 <motion.li
                   className="hover:text-blue-400 cursor-pointer mb-4"
                   variants={slideInLeftVariants}
