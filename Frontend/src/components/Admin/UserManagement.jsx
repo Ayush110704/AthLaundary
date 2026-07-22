@@ -1096,20 +1096,50 @@ function UserManagement() {
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </button>
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                  <button
-                    key={page}
-                    onClick={() => setCurrentPage(page)}
-                    className={`px-3 py-1 border rounded text-sm transition ${
-                      currentPage === page
-                        ? 'bg-blue-600 text-white border-blue-600'
-                        : 'hover:bg-gray-50'
-                    }`}
-                    type="button"
-                  >
-                    {page}
-                  </button>
-                ))}
+                
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page, index, array) => {
+                  // Show first page, last page, current page, and pages around current
+                  const isFirstPage = page === 1;
+                  const isLastPage = page === totalPages;
+                  const isCurrentPage = page === currentPage;
+                  const isNearCurrent = Math.abs(page - currentPage) <= 1;
+                  
+                  // Always show first page, last page, current page, and pages adjacent to current
+                  if (isFirstPage || isLastPage || isCurrentPage || isNearCurrent) {
+                    return (
+                      <button
+                        key={page}
+                        onClick={() => setCurrentPage(page)}
+                        className={`px-3 py-1 border rounded text-sm transition ${
+                          currentPage === page
+                            ? 'bg-blue-600 text-white border-blue-600'
+                            : 'hover:bg-gray-50'
+                        }`}
+                        type="button"
+                      >
+                        {page}
+                      </button>
+                    );
+                  }
+                  
+                  // Show ellipsis for gaps
+                  const prevPage = array[index - 1];
+                  const nextPage = array[index + 1];
+                  const showEllipsis = 
+                    (prevPage && prevPage < currentPage - 1 && page === currentPage - 2) ||
+                    (nextPage && nextPage > currentPage + 1 && page === currentPage + 2);
+                  
+                  if (showEllipsis) {
+                    return (
+                      <span key={`ellipsis-${page}`} className="px-2 py-1 text-gray-400">
+                        …
+                      </span>
+                    );
+                  }
+                  
+                  return null;
+                })}
+                
                 <button
                   onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                   disabled={currentPage === totalPages}
