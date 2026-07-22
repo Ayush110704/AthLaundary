@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useContext, createContext } from 'react';
+import React, { useState, useEffect, useContext, createContext, useCallback } from 'react';
+import { API_BASE } from '../../Api';
 import { 
   Search, 
   Eye, 
@@ -59,41 +60,6 @@ const useOrders = () => {
     throw new Error('useOrders must be used within an OrderProvider');
   }
   return context;
-};
-
-const OrderProvider = ({ children }) => {
-  const [bookings, setBookings] = useState([]);
-
-  const updateBookings = (newBookings) => {
-    setBookings(newBookings);
-  };
-
-  const addBooking = (booking) => {
-    setBookings(prev => [...prev, booking]);
-  };
-
-  const updateBooking = (id, updatedData) => {
-    setBookings(prev => prev.map(b => 
-      b.id === id ? { ...b, ...updatedData } : b
-    ));
-  };
-
-  const deleteBooking = (id) => {
-    setBookings(prev => prev.filter(b => b.id !== id));
-  };
-
-  return (
-    <OrderContext.Provider value={{
-      bookings,
-      setBookings,
-      updateBookings,
-      addBooking,
-      updateBooking,
-      deleteBooking
-    }}>
-      {children}
-    </OrderContext.Provider>
-  );
 };
 
 // HELPER FUNCTIONS FOR DYNAMIC DATES
@@ -160,6 +126,78 @@ const mapOrderToBooking = (order, index) => {
     transactionId: order.transactionId || null,
     statusUpdateHistory: order.statusUpdateHistory || []
   };
+};
+
+const OrderProvider = ({ children }) => {
+  const [bookings, setBookings] = useState([]);
+  const [isLoadingOrders, setIsLoadingOrders] = useState(true);
+  const [ordersError, setOrdersError] = useState('');
+
+  const fetchOrders = useCallback(async () => {
+    setIsLoadingOrders(true);
+    setOrdersError('');
+
+    try {
+      const response = await fetch(`${API_BASE}/orders/all`);
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to load orders');
+      }
+
+      const rawOrders = Array.isArray(data)
+        ? data
+        : Array.isArray(data.orders)
+        ? data.orders
+        : [];
+
+      const normalizedOrders = rawOrders.map((order, index) => mapOrderToBooking(order, index));
+      setBookings(normalizedOrders);
+    } catch (error) {
+      console.error("OrderProvider fetch error:", error);
+      setOrdersError(error.message || 'Unable to load orders');
+    } finally {
+      setIsLoadingOrders(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchOrders();
+  }, [fetchOrders]);
+
+  const updateBookings = (newBookings) => {
+    setBookings(newBookings);
+  };
+
+  const addBooking = (booking) => {
+    setBookings(prev => [...prev, booking]);
+  };
+
+  const updateBooking = (id, updatedData) => {
+    setBookings(prev => prev.map(b => 
+      b.id === id ? { ...b, ...updatedData } : b
+    ));
+  };
+
+  const deleteBooking = (id) => {
+    setBookings(prev => prev.filter(b => b.id !== id));
+  };
+
+  return (
+    <OrderContext.Provider value={{
+      bookings,
+      setBookings,
+      updateBookings,
+      addBooking,
+      updateBooking,
+      deleteBooking,
+      isLoadingOrders,
+      ordersError,
+      refetchOrders: fetchOrders
+    }}>
+      {children}
+    </OrderContext.Provider>
+  );
 };
 
 
@@ -1169,16 +1207,13 @@ function BookingDetailView({ booking, onBack, onStatusUpdate }) {
 // MAIN COMPONENT
 
 function OrderManagement() {
-  const { bookings, setBookings, updateBooking } = useOrders();
-  const API_URL = import.meta.env.VITE_API_URL;
+  const { bookings, updateBooking, isLoadingOrders, ordersError, refetchOrders } = useOrders();
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [filterStatus, setFilterStatus] = useState('All');
   const [filterService, setFilterService] = useState('All');
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [showDetailView, setShowDetailView] = useState(false);
-  const [isLoadingOrders, setIsLoadingOrders] = useState(true);
-  const [ordersError, setOrdersError] = useState('');
   const itemsPerPage = 5;
 
   const statusLabels = {
@@ -1222,50 +1257,6 @@ function OrderManagement() {
   useEffect(() => {
     setCurrentPage(1);
   }, [searchTerm, filterStatus, filterService]);
-
-  useEffect(() => {
-    let isMounted = true;
-
-    const fetchOrders = async () => {
-      setIsLoadingOrders(true);
-      setOrdersError('');
-
-      try {
-        const response = await fetch(`${API_URL}/api/orders/all`);
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.message || 'Failed to load orders');
-        }
-
-        const rawOrders = Array.isArray(data)
-          ? data
-          : Array.isArray(data.orders)
-          ? data.orders
-          : [];
-
-        const normalizedOrders = rawOrders.map((order, index) => mapOrderToBooking(order, index));
-
-        if (isMounted) {
-          setBookings(normalizedOrders);
-        }
-      } catch (error) {
-        if (isMounted) {
-          setOrdersError(error.message || 'Unable to load orders');
-        }
-      } finally {
-        if (isMounted) {
-          setIsLoadingOrders(false);
-        }
-      }
-    };
-
-    fetchOrders();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [setBookings]);
 
   const handleBookingClick = (booking) => {
     setSelectedBooking(booking);

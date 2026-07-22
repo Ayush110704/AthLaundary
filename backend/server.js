@@ -47,15 +47,20 @@ if (!MONGO_URI) {
     process.exit(1);
 }
 
-mongoose
-    .connect(MONGO_URI)
-    .then(() => {
+const connectDB = async () => {
+    try {
+        await mongoose.connect(MONGO_URI, {
+            serverSelectionTimeoutMS: 5000,
+        });
         console.log('🚀 MongoDB Connected successfully!');
-    })
-    .catch((error) => {
-        console.error('❌ MongoDB connection error:', error);
-        process.exit(1);
-    });
+    } catch (error) {
+        console.error('❌ MongoDB connection error:', error.message || error);
+        console.log('🔄 Retrying MongoDB connection in 5 seconds...');
+        setTimeout(connectDB, 5000);
+    }
+};
+
+connectDB();
 
 // ================================
 // API ROUTES

@@ -182,6 +182,9 @@ export const forgotPassword = async (req, res) => {
 export const resetPassword = async (req, res) => {
     const { token, newPassword } = req.body;
     try {
+        if (!token || !newPassword) {
+            return res.status(400).json({ success: false, message: "Token and new password are required" });
+        }
         // Verify the token
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         
@@ -194,7 +197,8 @@ export const resetPassword = async (req, res) => {
         
         res.status(200).json({ success: true, message: "Password updated successfully!" });
     } catch (error) {
-        res.status(400).json({ success: false, message: "Invalid or expired token." });
+        console.error("Reset password error:", error);
+        res.status(400).json({ success: false, message: error.message || "Invalid or expired token." });
     }
 };
 
