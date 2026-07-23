@@ -531,49 +531,63 @@ function Analytics() {
         </div>
 
         {/* MONTHLY TREND */}
-        <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900">Monthly Revenue Trend</h3>
-              <p className="text-sm text-gray-500">Revenue performance over the last 6 months</p>
+{/* MONTHLY TREND */}
+<div className="bg-white rounded-xl shadow-sm p-6 mb-6">
+  <div className="flex items-center justify-between mb-6">
+    <div>
+      <h3 className="text-lg font-semibold text-gray-900">Monthly Revenue Trend</h3>
+      <p className="text-sm text-gray-500">Revenue performance over the last 6 months</p>
+    </div>
+    <div className="flex items-center gap-2">
+      <span className="text-xs text-gray-500">Showing:</span>
+      <select
+        className="text-sm border border-gray-300 rounded-lg px-3 py-1 focus:ring-2 focus:ring-blue-500 outline-none"
+        value={selectedMetric}
+        onChange={(e) => setSelectedMetric(e.target.value)}
+      >
+        <option value="revenue">Revenue</option>
+      </select>
+    </div>
+  </div>
+  
+  <div className="h-64 relative">
+    <div className="absolute inset-0 flex items-end justify-around px-4 pb-8">
+      {monthlyRevenue.map((item, index) => {
+        // Find the maximum revenue value
+        const maxRevenue = Math.max(...monthlyRevenue.map(d => d.revenue), 1);
+        // Calculate height percentage (80% of container to leave room for labels)
+        const heightPercentage = (item.revenue / maxRevenue) * 80;
+        // Ensure minimum height for visibility
+        const barHeight = Math.max(heightPercentage, 5);
+        
+        return (
+          <div key={index} className="flex flex-col items-center justify-end h-full" style={{ flex: 1 }}>
+            {/* Revenue label */}
+            <div className="text-xs font-medium text-gray-600 mb-1">
+              ₹{item.revenue.toLocaleString()}
             </div>
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-gray-500">Showing:</span>
-              <select
-                className="text-sm border border-gray-300 rounded-lg px-3 py-1 focus:ring-2 focus:ring-blue-500 outline-none"
-                value={selectedMetric}
-                onChange={(e) => setSelectedMetric(e.target.value)}
-              >
-                <option value="revenue">Revenue</option>
-                <option value="orders">Orders</option>
-              </select>
+            
+            {/* Bar container */}
+            <div className="w-full max-w-[60px] h-[80%] flex items-end justify-center">
+              <div 
+                className="w-full bg-gradient-to-t from-blue-500 to-blue-400 rounded-t-lg transition-all duration-700 hover:from-blue-600 hover:to-blue-500"
+                style={{ 
+                  height: `${barHeight}%`,
+                  minHeight: '8px',
+                  width: '100%',
+                  maxWidth: '50px',
+                }}
+              />
             </div>
+            
+            {/* Month label */}
+            <span className="text-xs text-gray-500 mt-2">{item.month}</span>
           </div>
-          
-          <div className="relative h-64">
-            <div className="absolute inset-0 flex items-end gap-4">
-              {monthlyRevenue.map((item, index) => {
-                const maxRevenue = Math.max(...monthlyRevenue.map(d => d.revenue), 1);
-                const height = (item.revenue / maxRevenue) * 100;
-                return (
-                  <div key={index} className="flex-1 flex flex-col items-center gap-2">
-                    <div className="flex flex-col items-center">
-                      <span className="text-xs font-medium text-gray-600">₹{item.revenue}</span>
-                      <div 
-                        className="w-12 bg-gradient-to-t from-blue-500 to-blue-400 rounded-t-lg transition-all duration-500 hover:from-blue-600 hover:to-blue-500"
-                        style={{ 
-                          height: `${Math.max(height, 4)}%`,
-                          minHeight: '4px'
-                        }}
-                      />
-                    </div>
-                    <span className="text-xs text-gray-500">{item.month}</span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
+        );
+      })}
+    </div>
+  </div>
+</div>
 
         {/* INSIGHTS SECTION */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
