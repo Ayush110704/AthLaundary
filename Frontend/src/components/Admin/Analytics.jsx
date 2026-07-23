@@ -529,8 +529,7 @@ function Analytics() {
           <ServiceDistributionChart data={serviceDistribution} />
           <PaymentMethodChart data={paymentDistribution} />
         </div>
-
-        {/* MONTHLY TREND */}
+ 
 {/* MONTHLY TREND */}
 <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
   <div className="flex items-center justify-between mb-6">
