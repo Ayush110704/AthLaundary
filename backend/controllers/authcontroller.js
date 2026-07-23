@@ -2,6 +2,7 @@
 
 
 import nodemailer from 'nodemailer';
+import axios from 'axios';
 import { OAuth2Client } from 'google-auth-library';
 import User from '../models/User.js'; // Added .js
 import bcrypt from 'bcryptjs';
@@ -138,11 +139,52 @@ export const forgotPassword = async (req, res) => {
         // Generate a reset token valid for 15 minutes
         const resetToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '15m' });
 
-        // Force IPv4 (family: 4) & Port 587 to prevent ENETUNREACH IPv6 errors on Render
+        const clientUrl = process.env.CLIENT_URL || req.headers.origin || 'https://ath-laundary.vercel.app';
+        const resetUrl = `${clientUrl.replace(/\/+$/, '')}/reset-password/${resetToken}`;
+
+        const senderEmail = process.env.EMAIL_USER ? process.env.EMAIL_USER.trim() : "athlaundry@gmail.com";
+        const htmlContent = `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;">
+                <h2 style="color: #1e3a8a;">Reset Your Password</h2>
+                <p>You requested a password reset for your AthLaundry account.</p>
+                <p>Click the button below to set a new password. This link is valid for 15 minutes:</p>
+                <a href="${resetUrl}" style="display: inline-block; padding: 12px 24px; background-color: #1e3a8a; color: #ffffff; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 15px 0;">Reset Password</a>
+                <p style="color: #666; font-size: 12px;">If you didn't request this, you can safely ignore this email.</p>
+            </div>
+        `;
+
+        // If BREVO_API_KEY is present, send via Brevo HTTP API (Port 443 - HTTPS)
+        if (process.env.BREVO_API_KEY) {
+            console.log("Sending email via Brevo HTTP API...");
+            await axios.post(
+                'https://api.brevo.com/v3/smtp/email',
+                {
+                    sender: { name: "AthLaundry", email: senderEmail },
+                    to: [{ email: user.email }],
+                    subject: 'Password Reset - AthLaundry',
+                    htmlContent: htmlContent
+                },
+                {
+                    headers: {
+                        'api-key': process.env.BREVO_API_KEY.trim(),
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
+                }
+            );
+            return res.status(200).json({ success: true, message: "Reset link sent to email via Brevo" });
+        }
+
+        // Fallback to Nodemailer if BREVO_API_KEY is not set
+        if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+            console.error("Forgot password error: Neither BREVO_API_KEY nor EMAIL_USER/EMAIL_PASS configured");
+            return res.status(500).json({ success: false, message: "Email service is not configured on server" });
+        }
+
         const transporter = nodemailer.createTransport({
             host: 'smtp.gmail.com',
             port: 587,
-            secure: false, // TLS
+            secure: false,
             auth: { 
                 user: process.env.EMAIL_USER.trim(), 
                 pass: process.env.EMAIL_PASS.trim() 
@@ -150,30 +192,20 @@ export const forgotPassword = async (req, res) => {
             family: 4
         });
 
-        const clientUrl = process.env.CLIENT_URL || req.headers.origin || 'https://ath-laundary.vercel.app';
-        const resetUrl = `${clientUrl.replace(/\/+$/, '')}/reset-password/${resetToken}`;
-
         const mailOptions = {
             from: `"AthLaundry" <${process.env.EMAIL_USER}>`,
             to: user.email,
             subject: 'Password Reset - AthLaundry',
             text: `Click here to reset your password: ${resetUrl}`,
-            html: `
-                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; rounded: 10px;">
-                    <h2 style="color: #1e3a8a;">Reset Your Password</h2>
-                    <p>You requested a password reset for your AthLaundry account.</p>
-                    <p>Click the button below to set a new password. This link is valid for 15 minutes:</p>
-                    <a href="${resetUrl}" style="display: inline-block; padding: 12px 24px; background-color: #1e3a8a; color: #ffffff; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 15px 0;">Reset Password</a>
-                    <p style="color: #666; font-size: 12px;">If you didn't request this, you can safely ignore this email.</p>
-                </div>
-            `
+            html: htmlContent
         };
 
         await transporter.sendMail(mailOptions);
         res.status(200).json({ success: true, message: "Reset link sent to email" });
     } catch (error) {
-        console.error("Forgot password error:", error);
-        res.status(500).json({ success: false, message: error.message || "Error sending email" });
+        console.error("Forgot password error:", error.response?.data || error.message);
+        const errMsg = error.response?.data?.message || error.message || "Error sending email";
+        res.status(500).json({ success: false, message: errMsg });
     }
 };
 
