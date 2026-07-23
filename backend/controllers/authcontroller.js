@@ -142,7 +142,7 @@ export const forgotPassword = async (req, res) => {
         const clientUrl = process.env.CLIENT_URL || req.headers.origin || 'https://ath-laundary.vercel.app';
         const resetUrl = `${clientUrl.replace(/\/+$/, '')}/reset-password/${resetToken}`;
 
-        const senderEmail = process.env.EMAIL_USER ? process.env.EMAIL_USER.trim() : "athlaundry@gmail.com";
+        const senderEmail = (process.env.BREVO_SENDER_EMAIL || process.env.BREVO_EMAIL_USER || process.env.EMAIL_USER || "itsgauravrawat2005@gmail.com").trim();
         const htmlContent = `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;">
                 <h2 style="color: #1e3a8a;">Reset Your Password</h2>
