@@ -10,7 +10,9 @@ import {
   FaEnvelope,
   FaPhoneAlt,
   FaMapMarkerAlt,
+  
 } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
 
 // Animation variants
 const containerVariants = {
@@ -307,7 +309,9 @@ function Footer() {
                 animate="visible"
                 custom={0}
               >
-                <FaFacebookF className="text-white group-hover:rotate-12 transition-transform duration-300" />
+                <a href="https://x.com/athenura_in" target="_blank">
+                <FaXTwitter className="text-white group-hover:rotate-12 transition-transform duration-300" />
+              </a>
               </motion.div>
 
               <motion.div
@@ -320,7 +324,7 @@ function Footer() {
                
               >
                 <a  href="https://www.linkedin.com/company/athenura/posts/?feedView=all"
-                target="blank">
+                target="_blank">
                 <FaLinkedinIn className="text-white group-hover:rotate-12 transition-transform duration-300 text-lg" />
              </a> 
              </motion.div>
@@ -334,7 +338,7 @@ function Footer() {
                 custom={2}
               >
                 <a href="https://www.instagram.com/athenura.in?igsh=MXg4MWtrenA2ZHF4Zw=="
-                target="blank"
+                target="_blank"
                 >
                 
               <FaInstagram className="text-white group-hover:rotate-12 transition-transform duration-300 text-lg" />
@@ -349,7 +353,9 @@ function Footer() {
                 animate="visible"
                 custom={3}
               >
+                <a href="https://www.youtube.com/@Athenura" target="_blank">
                 <FaYoutube className="text-white group-hover:rotate-12 transition-transform duration-300" />
+             </a>
               </motion.div>
             </motion.div>
           </motion.div>
@@ -495,7 +501,7 @@ function Footer() {
                   <FaEnvelope className="text-blue-400 mt-1" />
                 </motion.div>
                 <span className="group-hover:underline decoration-blue-400 underline-offset-2">
-                  support@athenura.com
+                  official@athenura.in
                 </span>
               </motion.div>
 
@@ -512,7 +518,7 @@ function Footer() {
                   <FaPhoneAlt className="text-green-400 mt-1" />
                 </motion.div>
                 <span className="group-hover:underline decoration-green-400 underline-offset-2">
-                  +91 87654 32109
+                  +91 98350 51934
                 </span>
               </motion.div>
 
@@ -529,7 +535,7 @@ function Footer() {
                   <FaMapMarkerAlt className="text-red-400 mt-1" />
                 </motion.div>
                 <span className="group-hover:underline decoration-red-400 underline-offset-2">
-                  Ghaziabad, Uttar Pradesh
+                Sector 62, Noida, Uttar Pradesh
                 </span>
               </motion.div>
             </div>
