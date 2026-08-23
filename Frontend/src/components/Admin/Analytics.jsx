@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-// Import from the OrderManagement file where the context is defined
+import React, { useState, useEffect } from 'react'; 
 import { useOrders } from './OrderManagement';
 import {
   TrendingUp,
@@ -69,8 +68,7 @@ function StatCard({ title, value, icon: Icon, color, trend, trendValue, subtitle
 }
 
 // CHART COMPONENTS
-function RevenueChart({ data }) {
-  // Calculate max value, default to 1 if all values are 0
+function RevenueChart({ data }) { 
   const maxValue = Math.max(...data.map(d => d.value), 1);
   const hasData = data.some(d => d.value > 0);
   
@@ -171,6 +169,11 @@ function ServiceDistributionChart({ data }) {
 function PaymentMethodChart({ data }) {
   const total = data.reduce((sum, item) => sum + item.value, 0) || 1;
   const colors = ['#3B82F6', '#10B981', '#F59E0B', '#8B5CF6'];
+
+   const formatPaymentMethod = (method) => {
+    if (!method) return 'N/A';
+    return method.toUpperCase();
+  };
 
   return (
     <div className="bg-white rounded-xl shadow-sm p-6">
@@ -285,9 +288,8 @@ function StatusChart({ data }) {
   );
 }
 
-// MAIN ANALYTICS COMPONENT
-function Analytics() {
-  // Use real data from context
+//  ANALYTICS COMPONENT
+function Analytics() { 
   const { bookings } = useOrders();
   const [selectedMetric, setSelectedMetric] = useState('revenue');
   const [loading, setLoading] = useState(false);
@@ -356,7 +358,7 @@ function Analytics() {
     value
   }));
 
-  // Daily revenue (last 7 days)
+  // Daily revenue 
   const today = new Date();
   const revenueData = Array.from({ length: 7 }, (_, i) => {
     const date = new Date(today);
@@ -375,7 +377,7 @@ function Analytics() {
     return { day, value: dailyRevenue };
   });
 
-  // Monthly revenue trend (last 6 months)
+  // Monthly revenue trend 
   const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const monthlyRevenue = Array.from({ length: 6 }, (_, i) => {
     const month = new Date();
@@ -428,8 +430,7 @@ function Analytics() {
       setLoading(false);
     }, 1000);
   };
-
-  // RENDER
+ 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6">
       <div className="max-w-7xl mx-auto">
@@ -515,7 +516,7 @@ function Analytics() {
           <PaymentMethodChart data={paymentDistribution} />
         </div>
 
-        {/* MONTHLY TREND - WITHOUT SUMMARY STATS */}
+        {/* MONTHLY TREND */}
         <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
           <div className="flex items-center justify-between mb-6">
             <div>
@@ -525,12 +526,10 @@ function Analytics() {
           </div>
           
           <div className="h-64 relative">
-            {(() => {
-              // Find the maximum revenue value for scaling
+            {(() => { 
               const maxRevenue = Math.max(...monthlyRevenue.map(d => d.revenue), 1);
               const hasData = monthlyRevenue.some(d => d.revenue > 0);
-              
-              // If no data, show empty state
+               
               if (!hasData) {
                 return (
                   <div className="h-full flex items-center justify-center">
@@ -567,10 +566,8 @@ function Analytics() {
                         </div>
                       );
                     }
-                    
-                    // Calculate height percentage based on revenue
-                    const heightPercentage = (item.revenue / maxRevenue) * 80;
-                    // Minimum height for visibility (only for values > 0)
+                     
+                    const heightPercentage = (item.revenue / maxRevenue) * 80; 
                     const barHeight = Math.max(heightPercentage, 8);
                     
                     return (
