@@ -312,13 +312,7 @@ function Footer() {
                 >
                   <FaEnvelope className="text-blue-400 mt-1" />
                 </motion.div>
-                <div className="flex flex-col">
-                  <a
-                    href="mailto:support@athenura.com"
-                    className="hover:underline decoration-blue-400 underline-offset-2"
-                  >
-                    support@athenura.com
-                  </a>
+                <div className="flex flex-col"> 
                   <a
                     href="mailto:official@athenura.in"
                     className="hover:underline decoration-blue-400 underline-offset-2"
@@ -342,12 +336,7 @@ function Footer() {
                   <FaPhoneAlt className="text-green-400 mt-1" />
                 </motion.div>
                 <div className="flex flex-col">
-                  <a
-                    href="tel:+918765432109"
-                    className="hover:underline decoration-green-400 underline-offset-2"
-                  >
-                    +91 87654 32109
-                  </a>
+                  
                   <a
                     href="tel:+919835051934"
                     className="hover:underline decoration-green-400 underline-offset-2"
