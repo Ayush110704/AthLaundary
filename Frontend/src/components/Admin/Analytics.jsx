@@ -170,7 +170,8 @@ function PaymentMethodChart({ data }) {
   const total = data.reduce((sum, item) => sum + item.value, 0) || 1;
   const colors = ['#3B82F6', '#10B981', '#F59E0B', '#8B5CF6'];
 
-   const formatPaymentMethod = (method) => {
+  // Function to format payment method name to uppercase
+  const formatPaymentMethod = (method) => {
     if (!method) return 'N/A';
     return method.toUpperCase();
   };
@@ -191,7 +192,7 @@ function PaymentMethodChart({ data }) {
               <div className={`w-3 h-3 rounded-full`} style={{ backgroundColor: colors[index % colors.length] }} />
               <div className="flex-1">
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-700">{item.name}</span>
+                  <span className="text-gray-700 font-medium">{formatPaymentMethod(item.name)}</span>
                   <span className="text-gray-600">{item.value} ({Math.round((item.value / total) * 100)}%)</span>
                 </div>
               </div>
