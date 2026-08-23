@@ -199,23 +199,23 @@ const Pricing = () => {
         </section>
         {/* CTA Section */}
 
-        <section className="w-full pt-20 px-4 md:px-6 flex justify-center">
+        {/* <section className="w-full pt-20 px-4 md:px-6 flex justify-center">
           <motion.div
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7 }}
             className="relative  overflow-hidden rounded-2xl bg-linear-to-r from-blue-800 via-blue-900 to-blue-950 shadow-2xl w-[1150px]"
-          >
+          > */}
             {/* Decorative Background */}
-            <div className="absolute inset-0 opacity-15">
+            {/* <div className="absolute inset-0 opacity-15">
               <div className="absolute -top-20 left-20 h-64 w-64 rounded-full bg-white blur-3xl" />
               <div className="absolute bottom-0 right-20 h-52 w-52 rounded-full bg-white blur-3xl" />
-            </div>
+            </div> */}
 
-            <div className="relative flex flex-col md:flex-row items-center justify-between gap-6 px-6 py-8 md:px-10">
+            {/* <div className="relative flex flex-col md:flex-row items-center justify-between gap-6 px-6 py-8 md:px-10"> */}
               {/* Left Content */}
-              <motion.div
+              {/* <motion.div
                 initial={{ opacity: 0, x: -40 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.2 }}
@@ -251,10 +251,10 @@ const Pricing = () => {
                     <ArrowRight size={20} />
                   </motion.div>
                 </motion.button>
-              </motion.div>
+              </motion.div> */}
 
               {/* Pricing Card */}
-              <motion.div
+              {/* <motion.div
                 initial={{ opacity: 0, x: 40, scale: 0.9 }}
                 whileInView={{ opacity: 1, x: 0, scale: 1 }}
                 transition={{ delay: 0.4 }}
@@ -285,7 +285,7 @@ const Pricing = () => {
               </motion.div>
             </div>
           </motion.div>
-        </section>
+        </section> */}
 
         {/* pricing FAQ */}
         <section className="pt-16 px-4 bg-linear-to-b from-white to via-blue-200 to-white">

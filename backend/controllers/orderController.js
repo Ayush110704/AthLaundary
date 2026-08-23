@@ -48,7 +48,7 @@ export const createOrder = async (req, res) => {
         // FIXED: Safely normalize paymentMethod to lower-case so case-differences ('UPI' vs 'upi') don't break it
         const normalizedPaymentMethod = String(paymentMethod || '').trim().toLowerCase();
 
-      if (normalizedPaymentMethod === 'upi' || normalizedPaymentMethod === 'card' || normalizedPaymentMethod === 'online' || normalizedPaymentMethod === 'razorpay') {
+      if (normalizedPaymentMethod === 'UPI' || normalizedPaymentMethod === 'card' || normalizedPaymentMethod === 'online' || normalizedPaymentMethod === 'razorpay') {
             computedPaymentStatus = 'Paid';
             computedTransactionId = paymentId || `TXN${Date.now()}${Math.floor(Math.random() * 10000)}`;
         }

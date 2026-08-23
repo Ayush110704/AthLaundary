@@ -130,6 +130,81 @@ const Profile = () => {
   };
 
   const handleSaveProfile = async () => {
+    // Validate Name
+    if (!editProfileData.name || editProfileData.name.trim() === '') {
+      Swal.fire({
+        title: 'Invalid Name',
+        text: 'Name cannot be empty',
+        icon: 'error',
+        confirmButtonColor: '#ef4444'
+      });
+      return;
+    }
+    if (!/^[a-zA-Z\s.]+$/.test(editProfileData.name.trim())) {
+      Swal.fire({
+        title: 'Invalid Name',
+        text: 'Name should only contain letters, spaces, and dots',
+        icon: 'error',
+        confirmButtonColor: '#ef4444'
+      });
+      return;
+    }
+
+    // Validate Email
+    if (!editProfileData.email || editProfileData.email.trim() === '') {
+      Swal.fire({
+        title: 'Invalid Email',
+        text: 'Email cannot be empty',
+        icon: 'error',
+        confirmButtonColor: '#ef4444'
+      });
+      return;
+    }
+    if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(editProfileData.email.trim())) {
+      Swal.fire({
+        title: 'Invalid Email',
+        text: 'Please enter a valid email address (e.g., name@example.com)',
+        icon: 'error',
+        confirmButtonColor: '#ef4444'
+      });
+      return;
+    }
+
+    // Validate Mobile - Exactly 10 digits
+    if (editProfileData.mobile && editProfileData.mobile.trim() !== '') {
+      const mobileStr = editProfileData.mobile.trim();
+      if (!/^[0-9]{10}$/.test(mobileStr)) {
+        Swal.fire({
+          title: 'Invalid Mobile Number',
+          text: 'Mobile number must be exactly 10 digits (numbers only)',
+          icon: 'error',
+          confirmButtonColor: '#ef4444'
+        });
+        return;
+      }
+    } else {
+      Swal.fire({
+        title: 'Invalid Mobile Number',
+        text: 'Mobile number cannot be empty',
+        icon: 'error',
+        confirmButtonColor: '#ef4444'
+      });
+      return;
+    }
+
+    // Validate Address
+    if (editProfileData.address && editProfileData.address.trim() !== '') {
+      if (!/^[a-zA-Z0-9\s,.\-\/]+$/.test(editProfileData.address.trim())) {
+        Swal.fire({
+          title: 'Invalid Address',
+          text: 'Address should only contain alphanumeric characters, spaces, commas, hyphens, dots, and slashes',
+          icon: 'error',
+          confirmButtonColor: '#ef4444'
+        });
+        return;
+      }
+    }
+
     setIsLoading(true);
     
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -382,7 +457,7 @@ const Profile = () => {
             />
           </div>
 
-          {/* Quick Stats  */}
+          {/* Quick Stats */}
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -397,17 +472,7 @@ const Profile = () => {
               </p>
             </div>
 
-            {/* Profile Status */}
-            {/* <div className="bg-white rounded-xl p-2 md:p-4 border border-gray-200 text-center flex flex-col justify-center">
-              <p className="text-[10px] md:text-xs text-gray-500">Profile Status</p>
-              <p className="text-[11px] md:text-sm font-semibold text-green-600 mt-0.5 md:mt-1">
-                <i className="fas fa-check-circle mr-0.5 md:mr-1 text-[10px] md:text-sm"></i> 
-                <span className="text-[11px] md:text-sm">Active</span>
-              </p>
-            </div> */}
-
             {/* Profile Complete */}
-            
             <div className="bg-white rounded-xl p-2 md:p-4 border border-gray-200 flex flex-col items-center justify-center"> 
               <div className="relative inline-flex items-center justify-center md:hidden">
                 <svg className="w-14 h-14 transform -rotate-90">
@@ -515,6 +580,7 @@ const Profile = () => {
                 </div>
                 
                 <div className="space-y-4">
+                  {/* Full Name - Only letters and spaces */}
                   <motion.div 
                     initial={{ x: -20, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
@@ -528,12 +594,19 @@ const Profile = () => {
                       id="name"
                       type="text"
                       value={editProfileData.name}
-                      onChange={(e) => setEditProfileData({ ...editProfileData, name: e.target.value })}
+                      onChange={(e) => {
+                        // Only allow letters, spaces, and dots
+                        const value = e.target.value.replace(/[^a-zA-Z\s.]/g, '');
+                        setEditProfileData({ ...editProfileData, name: value });
+                      }}
                       className="w-full border border-gray-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none"
                       placeholder="Enter your full name"
+                      pattern="[A-Za-z\s.]+"
+                      title="Only letters, spaces, and dots are allowed"
                     />
                   </motion.div>
 
+                  {/* Email - Valid email format */}
                   <motion.div 
                     initial={{ x: -20, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
@@ -550,9 +623,12 @@ const Profile = () => {
                       onChange={(e) => setEditProfileData({ ...editProfileData, email: e.target.value })}
                       className="w-full border border-gray-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none"
                       placeholder="Enter your email"
+                      pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+                      title="Please enter a valid email address (e.g., name@example.com)"
                     />
                   </motion.div>
 
+                  {/* Mobile Number - Exactly 10 digits */}
                   <motion.div 
                     initial={{ x: -20, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
@@ -564,14 +640,25 @@ const Profile = () => {
                     </label>
                     <input
                       id="mobile"
-                      type="text"
+                      type="tel"
                       value={editProfileData.mobile}
-                      onChange={(e) => setEditProfileData({ ...editProfileData, mobile: e.target.value })}
+                      onChange={(e) => {
+                        // Only allow numbers
+                        const value = e.target.value.replace(/[^0-9]/g, '');
+                        // Limit to exactly 10 digits
+                        if (value.length <= 10) {
+                          setEditProfileData({ ...editProfileData, mobile: value });
+                        }
+                      }}
                       className="w-full border border-gray-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none"
-                      placeholder="Enter your mobile number"
+                      placeholder="Enter 10-digit mobile number"
+                      maxLength="10"
+                      pattern="[0-9]{10}"
+                      title="Mobile number must be exactly 10 digits"
                     />
                   </motion.div>
 
+                  {/* Address - Allow alphanumeric, spaces, and common punctuation */}
                   <motion.div 
                     initial={{ x: -20, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
@@ -585,12 +672,18 @@ const Profile = () => {
                       id="address"
                       type="text"
                       value={editProfileData.address}
-                      onChange={(e) => setEditProfileData({ ...editProfileData, address: e.target.value })}
+                      onChange={(e) => {
+                        // Allow alphanumeric, spaces, commas, hyphens, dots, and slashes
+                        const value = e.target.value.replace(/[^a-zA-Z0-9\s,.\-\/]/g, '');
+                        setEditProfileData({ ...editProfileData, address: value });
+                      }}
                       className="w-full border border-gray-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none"
                       placeholder="Enter your address"
+                      title="Alphanumeric characters, spaces, commas, hyphens, dots, and slashes are allowed"
                     />
                   </motion.div>
 
+                  {/* Date of Birth - Date picker only */}
                   <motion.div 
                     initial={{ x: -20, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
@@ -606,6 +699,7 @@ const Profile = () => {
                       value={editProfileData.dob}
                       onChange={(e) => setEditProfileData({ ...editProfileData, dob: e.target.value })}
                       className="w-full border border-gray-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none"
+                      max={new Date().toISOString().split('T')[0]} // Prevents future date selection
                     />
                   </motion.div>
                 </div>

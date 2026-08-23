@@ -973,7 +973,7 @@ export const pricingFaqs = [
     id: 1,
     question: "Is there a minimum order amount?",
     answer:
-      "Yes, for our Wash & Fold service, we have a 15 lb minimum per order. Orders under 15 lbs will be charged the minimum flat rate of $29.25.",
+      "Yes, for our Wash & Fold service, we have a 15 lb minimum per order. Orders under 15 lbs will be charged the minimum flat rate of 100rs",
   },
   {
     id: 2,
@@ -985,7 +985,7 @@ export const pricingFaqs = [
     id: 3,
     question: "Do you charge for pickup and delivery?",
     answer:
-      "Standard pickup and delivery are free for all orders over $35. For orders under $35, a small $5 logistics fee is applied.",
+      "Standard pickup and delivery are free for all orders over 150rs. For orders under 100rs, a small 30rs logistics fee is applied.",
   },
 ];
 

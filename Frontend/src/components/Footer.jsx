@@ -256,7 +256,7 @@ function Footer() {
       {/* ========================================== */}
       {/* WATER EFFECTS LAYER */}
       {/* ========================================== */}
-      
+
       {/* <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {waterDrops.map((drop, index) => (
           <WaterDrop key={index} {...drop} />
@@ -317,13 +317,14 @@ function Footer() {
                 initial="hidden"
                 animate="visible"
                 custom={1}
-               
               >
-                <a  href="https://www.linkedin.com/company/athenura/posts/?feedView=all"
-                target="blank">
-                <FaLinkedinIn className="text-white group-hover:rotate-12 transition-transform duration-300 text-lg" />
-             </a> 
-             </motion.div>
+                <a
+                  href="https://www.linkedin.com/company/athenura/posts/?feedView=all"
+                  target="blank"
+                >
+                  <FaLinkedinIn className="text-white group-hover:rotate-12 transition-transform duration-300 text-lg" />
+                </a>
+              </motion.div>
 
               <motion.div
                 className="group w-10 h-10 rounded-full bg-white/10 flex items-center justify-center cursor-pointer transition-colors duration-300 hover:bg-gradient-to-tr hover:from-[#feda75] hover:via-[#d62976] hover:to-[#4f5bd5] hover:shadow-lg hover:shadow-pink-500/30"
@@ -333,12 +334,12 @@ function Footer() {
                 animate="visible"
                 custom={2}
               >
-                <a href="https://www.instagram.com/athenura.in?igsh=MXg4MWtrenA2ZHF4Zw=="
-                target="blank"
+                <a
+                  href="https://www.instagram.com/athenura.in?igsh=MXg4MWtrenA2ZHF4Zw=="
+                  target="blank"
                 >
-                
-              <FaInstagram className="text-white group-hover:rotate-12 transition-transform duration-300 text-lg" />
-              </a>
+                  <FaInstagram className="text-white group-hover:rotate-12 transition-transform duration-300 text-lg" />
+                </a>
               </motion.div>
 
               <motion.div
@@ -414,14 +415,14 @@ function Footer() {
 
             <ul className="space-y-3 text-gray-300 text-sm">
               <Link to="/About">
-              <motion.li
-                className="hover:text-blue-400 cursor-pointer mb-4"
-                variants={slideInLeftVariants}
-                whileHover={{ x: 8 }}
-                transition={{ duration: 0.3 }}
-              >
-                About Us
-              </motion.li>
+                <motion.li
+                  className="hover:text-blue-400 cursor-pointer mb-4"
+                  variants={slideInLeftVariants}
+                  whileHover={{ x: 8 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  About Us
+                </motion.li>
               </Link>
               <Link to="/Services">
                 <motion.li
@@ -494,9 +495,14 @@ function Footer() {
                 >
                   <FaEnvelope className="text-blue-400 mt-1" />
                 </motion.div>
-                <span className="group-hover:underline decoration-blue-400 underline-offset-2">
-                  support@athenura.com
-                </span>
+                <a
+                  href="mailto:support@athenura.com"
+                  className="flex items-center gap-2 group"
+                >
+                  <span className="group-hover:underline decoration-blue-400 underline-offset-2">
+                    support@athenura.com
+                  </span>
+                </a>
               </motion.div>
 
               <motion.div
@@ -511,9 +517,14 @@ function Footer() {
                 >
                   <FaPhoneAlt className="text-green-400 mt-1" />
                 </motion.div>
-                <span className="group-hover:underline decoration-green-400 underline-offset-2">
-                  +91 87654 32109
-                </span>
+                <a
+                  href="tel:+918765432109"
+                  className="flex items-center gap-2 group"
+                > 
+                  <span className="group-hover:underline decoration-green-400 underline-offset-2">
+                    +91 87654 32109
+                  </span>
+                </a>
               </motion.div>
 
               <motion.div

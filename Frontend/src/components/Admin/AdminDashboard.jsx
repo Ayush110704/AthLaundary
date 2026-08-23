@@ -18,19 +18,16 @@ import {
   AlertTriangle,
   Clock as ClockIcon,
   DollarSign
-} from 'lucide-react';
-// Import the useOrders hook
+} from 'lucide-react'; 
 import { useOrders } from './OrderManagement';
 
 const AdminDashboard = () => { 
   const navigate = useNavigate();
   const [adminName, setAdminName] = useState('Admin');
   const [loginActivities, setLoginActivities] = useState([]);
-  
-  // Get real orders data from context
+   
   const { bookings } = useOrders();
-
-  // Check if admin is logged in and get data from localStorage
+ 
   useEffect(() => {
     const session = JSON.parse(localStorage.getItem('adminSession'));
     
@@ -40,12 +37,10 @@ const AdminDashboard = () => {
     }
 
     setAdminName(session.fullName || 'Admin');
-
-    // Load and update login activities from localStorage preserving all records
+ 
     loadAndRecordLoginActivities(session);
   }, [navigate]);
-
-  // Load and preserve login activities from localStorage across different admin logins
+ 
   const loadAndRecordLoginActivities = (session) => {
     const storedActivities = JSON.parse(localStorage.getItem('adminLoginActivities') || '[]');
     
@@ -54,8 +49,7 @@ const AdminDashboard = () => {
       'AD';
     
     const currentSessionTime = session.loginTimestamp || new Date().toISOString();
-    
-    // Check if this exact session/login already exists to prevent duplicate spam on re-renders
+     
     const currentActivityExists = storedActivities.some(
       act => act.name === (session.fullName || 'Admin') && Math.abs(new Date(act.timestamp) - new Date(currentSessionTime)) < 60000
     );
@@ -71,16 +65,14 @@ const AdminDashboard = () => {
         action: 'Logged in to admin dashboard',
         time: 'Just now',
         timestamp: currentSessionTime
-      };
-      // Add new login to the beginning of the array so history accumulates
+      }; 
       updatedActivities = [newActivity, ...storedActivities];
       localStorage.setItem('adminLoginActivities', JSON.stringify(updatedActivities));
     }
 
     setLoginActivities(updatedActivities);
   };
-
-  // ============= COMPUTED STATISTICS FROM BOOKINGS =============
+ 
   
   const activeBookings = (Array.isArray(bookings) ? bookings : []).filter(b => b && b.status && b.status.toLowerCase() !== 'cancelled');
   
@@ -132,7 +124,7 @@ const AdminDashboard = () => {
   }));
 
   const paymentData = activeBookings.reduce((acc, booking) => {
-    const method = booking.paymentMethod || 'Unknown';
+    const method = (booking.paymentMethod || 'Unknown').toUpperCase();
     acc[method] = (acc[method] || 0) + 1;
     return acc;
   }, {});
@@ -185,11 +177,11 @@ const AdminDashboard = () => {
   };
 
   const quickActions = [
-    { id: 1, icon: Users, label: 'User Management', color: 'bg-blue-500', path: '/admin-dashboard/user-management' },
-    { id: 2, icon: ShoppingBag, label: 'Order Management', color: 'bg-green-500', path: '/admin-dashboard/orders' },
-    { id: 3, icon: Wrench, label: 'Service Management', color: 'bg-yellow-500', path: '/admin-dashboard/services' },
-    { id: 4, icon: CreditCard, label: 'Payments', color: 'bg-purple-500', path: '/admin-dashboard/payments' },
-    { id: 5, icon: BarChart3, label: 'Analytics', color: 'bg-red-500', path: '/admin-dashboard/analytics' },
+    { id: 1, icon: Users, label: 'User Management', color: 'bg-blue-500', path: '/admin/users' },
+    { id: 2, icon: ShoppingBag, label: 'Order Management', color: 'bg-green-500', path: '/admin/orders' },
+    { id: 3, icon: Wrench, label: 'Service Management', color: 'bg-yellow-500', path: '/admin/services' },
+    { id: 4, icon: CreditCard, label: 'Payments', color: 'bg-purple-500', path: '/admin/payments' },
+    { id: 5, icon: BarChart3, label: 'Analytics', color: 'bg-red-500', path: '/admin/analytics' },
   ];
  
   const handleNavigation = (path) => {
@@ -379,8 +371,7 @@ const AdminDashboard = () => {
                       </div>
                       <div>
                         <p className="text-sm text-gray-800">
-                          <span className="font-medium">{activity.name}</span>
-                          {/* Displaying Gmail alongside the name */}
+                          <span className="font-medium">{activity.name}</span> 
                           <span className="text-xs text-gray-500 block">
                             {activity.email}
                           </span>
@@ -389,12 +380,7 @@ const AdminDashboard = () => {
                           {activity.action} • {activity.timestamp ? new Date(activity.timestamp).toLocaleString() : ''}
                         </p>
                       </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs text-gray-400">
-                        {activity.time || formatTime(activity.timestamp)}
-                      </span>
-                    </div>
+                    </div> 
                   </motion.div>
                 ))
               ) : (

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {
-  Search, Plus, Eye,Edit, Trash2, ChevronLeft, ChevronRight,Package, IndianRupee,
+  Search, Plus, Eye,Pen, Trash2, ChevronLeft, ChevronRight,Package, IndianRupee,
    Clock,CheckCircle, XCircle, Shirt, Sofa, BrushCleaning,ArrowLeft,Tag,} from "lucide-react";
 import AddService from '../AddService'
 import {MOCK_SERVICES, DEFAULT_CATEGORY_ITEMS} from '../../Data/LaundaryData.js'
@@ -715,7 +715,7 @@ const handleEdit = (service) => {
       /> */}
 
                        
-                          <Edit className="w-4 h-4 text-yellow-600" />
+                          <Pen className="w-4 h-4 text-yellow-600" />
                         </button>
 
                         {/* Delete action removed */}

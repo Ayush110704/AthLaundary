@@ -49,9 +49,6 @@ import {
   CalendarDays
 } from 'lucide-react';
 
-
-// ORDER CONTEXT - For sharing data with Analytics and Payments
-
 const OrderContext = createContext();
 
 const useOrders = () => {
@@ -63,7 +60,6 @@ const useOrders = () => {
 };
 
 // HELPER FUNCTIONS FOR DYNAMIC DATES
-
 const getDate = (daysAgo) => {
   const date = new Date();
   date.setDate(date.getDate() - daysAgo);
@@ -107,7 +103,7 @@ const mapOrderToBooking = (order, index) => {
 
   return {
     id: order.orderId || order._id || `ORD-${index + 1}`,
-    mongoId: order._id,
+    mongoId: order._id || order.id || null,
     customerName: order.customerName || 'Customer',
     customerEmail: order.email || 'N/A',
     customerPhone: order.phone || 'N/A',
@@ -200,9 +196,7 @@ const OrderProvider = ({ children }) => {
   );
 };
 
-
-// MOCK DATA - Bookings with Items (Dynamic Dates)
-
+// MOCK DATA
 const MOCK_BOOKINGS = [
   {
     id: 'BK001',
@@ -431,26 +425,21 @@ const MOCK_BOOKINGS = [
   }
 ];
 
-
 // STATUS NOTE MODAL COMPONENT WITH TIME PICKER
-
 function StatusNoteModal({ status, onClose, onConfirm, booking }) {
   const [note, setNote] = useState('');
   const [pickupDate, setPickupDate] = useState('');
   const [pickupTime, setPickupTime] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Set default date and time when modal opens
   useEffect(() => {
     if (status === 'pickup') {
       const now = new Date();
       const tomorrow = new Date(now);
       tomorrow.setDate(tomorrow.getDate() + 1);
-      
-      // Format date as YYYY-MM-DD
-      const dateStr = tomorrow.toISOString().split('T')[0];
-      // Format time as HH:mm
-      const timeStr = '10:00'; // Default to 10 AM
+       
+      const dateStr = tomorrow.toISOString().split('T')[0]; 
+      const timeStr = '10:00'; 
       
       setPickupDate(dateStr);
       setPickupTime(timeStr);
@@ -511,8 +500,7 @@ function StatusNoteModal({ status, onClose, onConfirm, booking }) {
       alert('Please enter a note for this status update');
       return;
     }
-    
-    // Validate pickup date and time if status is pickup
+     
     if (status === 'pickup') {
       if (!pickupDate) {
         alert('Please select a pickup date');
@@ -551,7 +539,7 @@ function StatusNoteModal({ status, onClose, onConfirm, booking }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 animate-fadeIn">
+    <div className="fixed inset-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
       <div className="bg-white rounded-xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center p-6 border-b border-gray-200">
           <h2 className="text-xl font-bold flex items-center gap-2 text-gray-800">
@@ -645,15 +633,20 @@ function StatusNoteModal({ status, onClose, onConfirm, booking }) {
   );
 }
 
-
-// BOOKING DETAIL VIEW COMPONENT
-
+// BOOKING DETAIL VIEW
 function BookingDetailView({ booking, onBack, onStatusUpdate }) {
   const [selectedStatus, setSelectedStatus] = useState(booking.status);
   const [showStatusNote, setShowStatusNote] = useState(false);
   const [pendingStatus, setPendingStatus] = useState(null);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [localBooking, setLocalBooking] = useState(booking);
   
+  // Update local booking when prop changes
+  useEffect(() => {
+    setLocalBooking(booking);
+    setSelectedStatus(booking.status);
+  }, [booking]);
+
   const statusConfig = {
     'pickup': { 
       label: 'Pickup', 
@@ -731,14 +724,14 @@ function BookingDetailView({ booking, onBack, onStatusUpdate }) {
     }
   };
 
-  const currentStatusConfig = statusConfig[booking.status] || statusConfig['pickup'];
+  const currentStatusConfig = statusConfig[localBooking.status] || statusConfig['pickup'];
   const StatusIcon = currentStatusConfig.icon;
-  const PaymentIcon = paymentStatusConfig[booking.paymentStatus]?.icon || CheckCircle;
+  const PaymentIcon = paymentStatusConfig[localBooking.paymentStatus]?.icon || CheckCircle;
 
-  const totalItems = booking.itemsList?.reduce((sum, item) => sum + item.quantity, 0) || 0;
+  const totalItems = localBooking.itemsList?.reduce((sum, item) => sum + item.quantity, 0) || 0;
 
   const getDeliveryDisplay = () => {
-    if (booking.status === 'cancelled') {
+    if (localBooking.status === 'cancelled') {
       return {
         icon: Ban,
         color: 'text-red-500',
@@ -746,14 +739,14 @@ function BookingDetailView({ booking, onBack, onStatusUpdate }) {
         message: 'Delivery Blocked',
         description: 'Order was cancelled'
       };
-    } else if (booking.status === 'pickup') {
+    } else if (localBooking.status === 'pickup') {
       return {
         icon: Clock,
         color: 'text-yellow-500',
         bgColor: 'bg-yellow-50',
         message: 'Awaiting Pickup',
       };
-    } else if (booking.status === 'out_for_delivery') {
+    } else if (localBooking.status === 'out_for_delivery') {
       return {
         icon: Truck,
         color: 'text-orange-500',
@@ -761,7 +754,7 @@ function BookingDetailView({ booking, onBack, onStatusUpdate }) {
         message: 'On the way!',
         description: 'Order is out for delivery'
       };
-    } else if (booking.status === 'completed') {
+    } else if (localBooking.status === 'completed') {
       return {
         icon: CheckCheck,
         color: 'text-green-500',
@@ -769,7 +762,7 @@ function BookingDetailView({ booking, onBack, onStatusUpdate }) {
         message: 'Delivered',
         description: 'Order completed successfully'
       };
-    } else if (booking.status === 'processing' || booking.status === 'cleaning') {
+    } else if (localBooking.status === 'processing' || localBooking.status === 'cleaning') {
       return {
         icon: Package,
         color: 'text-purple-500',
@@ -809,18 +802,56 @@ function BookingDetailView({ booking, onBack, onStatusUpdate }) {
     );
   };
 
+  // Check if status change is allowed
+  const isStatusChangeAllowed = () => {
+    const currentStatus = localBooking.status;
+    // If current status is completed or cancelled, prevent any status change
+    if (currentStatus === 'completed' || currentStatus === 'cancelled') {
+      return false;
+    }
+    return true;
+  };
+
+  // Get status options based on current status
+  const getAvailableStatusOptions = () => {
+    const currentStatus = localBooking.status;
+    const allStatuses = [
+      { value: 'pickup', label: 'Pickup', icon: ShoppingCart, color: 'bg-blue-500' },
+      { value: 'processing', label: 'Processing', icon: Package, color: 'bg-purple-500' },
+      { value: 'cleaning', label: 'Cleaning', icon: Sparkles, color: 'bg-indigo-500' },
+      { value: 'out_for_delivery', label: 'Out for Delivery', icon: Send, color: 'bg-orange-500' },
+      { value: 'completed', label: 'Completed', icon: CheckCheck, color: 'bg-green-500' },
+      { value: 'cancelled', label: 'Cancelled', icon: XCircle, color: 'bg-red-500' }
+    ];
+
+    // If current status is completed or cancelled, return empty array (no options)
+    if (currentStatus === 'completed' || currentStatus === 'cancelled') {
+      return [];
+    }
+
+    // Otherwise return all statuses
+    return allStatuses;
+  };
+
   const handleStatusChange = (newStatus) => {
     if (newStatus === selectedStatus) return;
+    
+    // Check if status change is allowed
+    if (!isStatusChangeAllowed()) {
+      alert(`Cannot change status. Order is already ${statusConfig[localBooking.status]?.label || localBooking.status}.`);
+      return;
+    }
+    
     setPendingStatus(newStatus);
     setShowStatusNote(true);
   };
 
-  const handleStatusNoteConfirm = (data) => {
+  const handleStatusNoteConfirm = async (data) => {
     if (!pendingStatus) return;
     
     setIsUpdating(true);
     try {
-      const history = booking.statusUpdateHistory || [];
+      const history = localBooking.statusUpdateHistory || [];
       const newHistory = [...history, {
         status: pendingStatus,
         date: new Date().toISOString(),
@@ -830,20 +861,24 @@ function BookingDetailView({ booking, onBack, onStatusUpdate }) {
         pickupTime: data.pickupTime || null
       }];
 
-      // Update pickup date if status is pickup
       const updateData = {
         status: pendingStatus,
         statusUpdateHistory: newHistory,
-        notes: data.note ? `${booking.notes || ''} | ${data.note}` : booking.notes
+        notes: data.note ? `${localBooking.notes || ''} | ${data.note}` : localBooking.notes
       };
 
-      // If status is pickup and we have pickup date/time, update it
       if (pendingStatus === 'pickup' && data.pickupDateTime) {
         updateData.pickupDate = data.pickupDateTime.toISOString();
       }
 
-      onStatusUpdate(booking.id, updateData);
+      // Call parent's status update function
+      await onStatusUpdate(localBooking.id, updateData);
 
+      // Update local state
+      setLocalBooking({
+        ...localBooking,
+        ...updateData
+      });
       setSelectedStatus(pendingStatus);
       setShowStatusNote(false);
       setPendingStatus(null);
@@ -851,7 +886,7 @@ function BookingDetailView({ booking, onBack, onStatusUpdate }) {
       const statusLabel = statusConfig[pendingStatus]?.label || pendingStatus;
       const message = pendingStatus === 'pickup' 
         ? `Pickup scheduled for ${data.pickupDate} at ${data.pickupTime}`
-        : `Order ${booking.id} status updated to ${statusLabel} successfully!`;
+        : `Order ${localBooking.id} status updated to ${statusLabel} successfully!`;
       
       alert(message);
     } catch (error) {
@@ -862,19 +897,10 @@ function BookingDetailView({ booking, onBack, onStatusUpdate }) {
     }
   };
 
-  // Status options with their labels and icons
-  const statusOptions = [
-    { value: 'pickup', label: 'Pickup', icon: ShoppingCart, color: 'bg-blue-500' },
-    { value: 'processing', label: 'Processing', icon: Package, color: 'bg-purple-500' },
-    { value: 'cleaning', label: 'Cleaning', icon: Sparkles, color: 'bg-indigo-500' },
-    { value: 'out_for_delivery', label: 'Out for Delivery', icon: Send, color: 'bg-orange-500' },
-    { value: 'completed', label: 'Completed', icon: CheckCheck, color: 'bg-green-500' },
-    { value: 'cancelled', label: 'Cancelled', icon: XCircle, color: 'bg-red-500' }
-  ];
+  const statusOptions = getAvailableStatusOptions();
 
-  // Get status history with notes
   const getStatusHistory = () => {
-    const history = booking.statusUpdateHistory || [];
+    const history = localBooking.statusUpdateHistory || [];
     return history.map(update => ({
       ...update,
       label: statusConfig[update.status]?.label || update.status
@@ -893,48 +919,52 @@ function BookingDetailView({ booking, onBack, onStatusUpdate }) {
           </button>
           <div>
             <h2 className="text-xl font-bold text-gray-900">Booking Details</h2>
-            <p className="text-sm text-gray-500">#{booking.id}</p>
+            <p className="text-sm text-gray-500">#{localBooking.id}</p>
           </div>
         </div>
-        {/* <div className="flex gap-2">
-          <button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-sm flex items-center gap-2">
-            <Download className="w-4 h-4" />
-            Invoice
-          </button>
-        </div> */}
       </div>
 
       <div className="p-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div>
-            <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">Customer Information</h3>
+            <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">
+              Customer Information
+            </h3>
             <div className="space-y-3">
               <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
                 <User className="w-5 h-5 text-blue-500 mt-0.5" />
                 <div>
                   <p className="text-xs text-gray-500">Customer Name</p>
-                  <p className="text-sm font-medium text-gray-800">{booking.customerName}</p>
+                  <p className="text-sm font-medium text-gray-800">
+                    {localBooking.customerName}
+                  </p>
                 </div>
               </div>
               <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
                 <Mail className="w-5 h-5 text-blue-500 mt-0.5" />
                 <div>
                   <p className="text-xs text-gray-500">Email</p>
-                  <p className="text-sm font-medium text-gray-800">{booking.customerEmail}</p>
+                  <p className="text-sm font-medium text-gray-800">
+                    {localBooking.customerEmail}
+                  </p>
                 </div>
               </div>
               <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
                 <Phone className="w-5 h-5 text-blue-500 mt-0.5" />
                 <div>
                   <p className="text-xs text-gray-500">Phone</p>
-                  <p className="text-sm font-medium text-gray-800">{booking.customerPhone}</p>
+                  <p className="text-sm font-medium text-gray-800">
+                    {localBooking.customerPhone}
+                  </p>
                 </div>
               </div>
               <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
                 <MapPin className="w-5 h-5 text-blue-500 mt-0.5" />
                 <div>
                   <p className="text-xs text-gray-500">Address</p>
-                  <p className="text-sm font-medium text-gray-800">{booking.customerAddress}</p>
+                  <p className="text-sm font-medium text-gray-800">
+                    {localBooking.customerAddress}
+                  </p>
                 </div>
               </div>
             </div>
@@ -947,29 +977,53 @@ function BookingDetailView({ booking, onBack, onStatusUpdate }) {
                 <table className="w-full">
                   <thead className="bg-gray-100">
                     <tr>
-                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-600">Item</th>
-                      <th className="px-4 py-2 text-center text-xs font-medium text-gray-600">Quantity</th>
-                      <th className="px-4 py-2 text-right text-xs font-medium text-gray-600">Price</th>
-                      <th className="px-4 py-2 text-right text-xs font-medium text-gray-600">Total</th>
+                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-600">
+                        Item
+                      </th>
+                      <th className="px-4 py-2 text-center text-xs font-medium text-gray-600">
+                        Quantity
+                      </th>
+                      <th className="px-4 py-2 text-right text-xs font-medium text-gray-600">
+                        Price
+                      </th>
+                      <th className="px-4 py-2 text-right text-xs font-medium text-gray-600">
+                        Total
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200">
-                    {booking.itemsList?.map((item, index) => (
-                      <tr key={index} className="hover:bg-gray-100 transition-colors">
+                    {localBooking.itemsList?.map((item, index) => (
+                      <tr
+                        key={index}
+                        className="hover:bg-gray-100 transition-colors"
+                      >
                         <td className="px-4 py-2 text-sm text-gray-800 flex items-center gap-2">
                           <Shirt className="w-4 h-4 text-blue-500" />
                           {item.name}
                         </td>
-                        <td className="px-4 py-2 text-sm text-gray-600 text-center">{item.quantity}</td>
-                        <td className="px-4 py-2 text-sm text-gray-600 text-right">₹{item.price}</td>
-                        <td className="px-4 py-2 text-sm font-medium text-gray-800 text-right">₹{item.quantity * item.price}</td>
+                        <td className="px-4 py-2 text-sm text-gray-600 text-center">
+                          {item.quantity}
+                        </td>
+                        <td className="px-4 py-2 text-sm text-gray-600 text-right">
+                          ₹{item.price}
+                        </td>
+                        <td className="px-4 py-2 text-sm font-medium text-gray-800 text-right">
+                          ₹{item.quantity * item.price}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
                   <tfoot className="bg-gray-100 border-t border-gray-200">
                     <tr>
-                      <td colSpan="3" className="px-4 py-2 text-sm font-semibold text-gray-800 text-right">Total:</td>
-                      <td className="px-4 py-2 text-sm font-bold text-green-600 text-right">₹{booking.totalAmount}</td>
+                      <td
+                        colSpan="3"
+                        className="px-4 py-2 text-sm font-semibold text-gray-800 text-right"
+                      >
+                        Total:
+                      </td>
+                      <td className="px-4 py-2 text-sm font-bold text-green-600 text-right">
+                        ₹{localBooking.totalAmount}
+                      </td>
                     </tr>
                   </tfoot>
                 </table>
@@ -978,87 +1032,126 @@ function BookingDetailView({ booking, onBack, onStatusUpdate }) {
           </div>
 
           <div>
-            <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">Booking Details</h3>
+            <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">
+              Booking Details
+            </h3>
             <div className="space-y-3">
               <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
                 <Package className="w-5 h-5 text-blue-500 mt-0.5" />
                 <div>
                   <p className="text-xs text-gray-500">Service</p>
-                  <p className="text-sm font-medium text-gray-800">{booking.service}</p>
+                  <p className="text-sm font-medium text-gray-800">
+                    {localBooking.service}
+                  </p>
                 </div>
               </div>
               <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
                 <ShoppingBag className="w-5 h-5 text-blue-500 mt-0.5" />
                 <div>
                   <p className="text-xs text-gray-500">Total Items</p>
-                  <p className="text-sm font-medium text-gray-800">{totalItems} items</p>
+                  <p className="text-sm font-medium text-gray-800">
+                    {totalItems} items
+                  </p>
                 </div>
               </div>
               <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
                 <div className="w-5 h-5 text-blue-500 mt-0.5">💰</div>
                 <div>
                   <p className="text-xs text-gray-500">Total Amount</p>
-                  <p className="text-sm font-bold text-green-600">₹{booking.totalAmount}</p>
+                  <p className="text-sm font-bold text-green-600">
+                    ₹{localBooking.totalAmount}
+                  </p>
                 </div>
               </div>
               <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
                 <div className="flex flex-col gap-2 w-full">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs text-gray-500">Current Status</span>
-                    {getStatusBadge(booking.status)}
+                    <span className="text-xs text-gray-500">
+                      Current Status
+                    </span>
+                    {getStatusBadge(localBooking.status)}
                   </div>
                 </div>
               </div>
             </div>
 
             <div className="mt-4">
-              <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Payment Details</h3>
+              <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">
+                Payment Details
+              </h3>
               <div className="space-y-2">
                 <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                   <div className="flex items-center gap-2">
-                    {getPaymentMethodIcon(booking.paymentMethod)}
-                    <span className="text-sm text-gray-600">Payment Method</span>
+                    {getPaymentMethodIcon(localBooking.paymentMethod)}
+                    <span className="text-sm text-gray-600">
+                      Payment Method
+                    </span>
                   </div>
-                  <span className="text-sm font-medium text-gray-800">{booking.paymentMethod}</span>
+                  <span className="text-sm font-medium text-gray-800">
+                    {localBooking.paymentMethod}
+                  </span>
                 </div>
-                
-                {/* Payment Status with Dropdown - Only Pending and Paid */}
+
                 <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                   <div className="flex items-center gap-2">
                     <PaymentIcon className="w-4 h-4" />
-                    <span className="text-sm text-gray-600">Payment Status</span>
+                    <span className="text-sm text-gray-600">
+                      Payment Status
+                    </span>
                   </div>
                   <select
-                    value={booking.paymentStatus}
+                    value={localBooking.paymentStatus}
                     onChange={(e) => {
                       const newStatus = e.target.value;
-                      onStatusUpdate(booking.id, {
-                        status: booking.status,
+                      onStatusUpdate(localBooking.id, {
+                        status: localBooking.status,
                         paymentStatus: newStatus,
-                        note: `Payment status updated to ${newStatus}`
+                        note: `Payment status updated to ${newStatus}`,
                       });
                     }}
-                    className="px-3 py-1 rounded-lg text-xs font-semibold border-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                    disabled={localBooking.status === 'completed' || localBooking.status === 'cancelled'}
+                    className={`px-3 py-1 rounded-lg text-xs font-semibold border-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition ${
+                      localBooking.status === 'completed' || localBooking.status === 'cancelled' 
+                        ? 'opacity-60 cursor-not-allowed' 
+                        : ''
+                    }`}
                     style={{
-                      backgroundColor: booking.paymentStatus === 'Paid' ? '#dcfce7' : '#fef3c7',
-                      color: booking.paymentStatus === 'Paid' ? '#166534' : '#92400e',
-                      borderColor: booking.paymentStatus === 'Paid' ? '#86efac' : '#fcd34d'
+                      backgroundColor:
+                        localBooking.paymentStatus === "Paid"
+                          ? "#dcfce7"
+                          : "#fef3c7",
+                      color:
+                        localBooking.paymentStatus === "Paid"
+                          ? "#166534"
+                          : "#92400e",
+                      borderColor:
+                        localBooking.paymentStatus === "Paid"
+                          ? "#86efac"
+                          : "#fcd34d",
                     }}
                   >
-                    <option value="Pending" style={{ backgroundColor: '#fef3c7', color: '#92400e' }}>
+                    <option
+                      value="Pending"
+                      style={{ backgroundColor: "#fef3c7", color: "#92400e" }}
+                    >
                       Pending
                     </option>
-                    <option value="Paid" style={{ backgroundColor: '#dcfce7', color: '#166534' }}>
+                    <option
+                      value="Paid"
+                      style={{ backgroundColor: "#dcfce7", color: "#166534" }}
+                    >
                       Paid
                     </option>
                   </select>
                 </div>
-                
+
                 <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                   <div className="flex items-center gap-2">
                     <span className="text-sm text-gray-600">Amount Paid</span>
                   </div>
-                  <span className="text-sm font-bold text-green-600">₹{booking.totalAmount}</span>
+                  <span className="text-sm font-bold text-green-600">
+                    ₹{localBooking.totalAmount}
+                  </span>
                 </div>
               </div>
             </div>
@@ -1067,16 +1160,24 @@ function BookingDetailView({ booking, onBack, onStatusUpdate }) {
               <div className="flex items-center gap-2 text-sm">
                 <Calendar className="w-4 h-4 text-gray-400" />
                 <span className="text-gray-500">Booked:</span>
-                <span className="font-medium">{new Date(booking.bookingDate).toLocaleString()}</span>
+                <span className="font-medium">
+                  {new Date(localBooking.bookingDate).toLocaleDateString("en-GB")}
+                </span>
               </div>
               <div className="flex items-center gap-2 text-sm">
                 <CalendarX className="w-4 h-4 text-gray-400" />
                 <span className="text-gray-500">Pickup:</span>
-                <span className="font-medium">{new Date(booking.pickupDate).toLocaleString()}</span>
+                <span className="font-medium">
+                  {new Date(localBooking.pickupDate).toLocaleString()}
+                </span>
               </div>
               {deliveryInfo && (
-                <div className={`flex items-center gap-2 text-sm p-2 rounded-lg ${deliveryInfo.bgColor}`}>
-                  <deliveryInfo.icon className={`w-4 h-4 ${deliveryInfo.color}`} />
+                <div
+                  className={`flex items-center gap-2 text-sm p-2 rounded-lg ${deliveryInfo.bgColor}`}
+                >
+                  <deliveryInfo.icon
+                    className={`w-4 h-4 ${deliveryInfo.color}`}
+                  />
                   <div>
                     <span className="text-gray-500">Delivery:</span>
                     <span className={`font-medium ${deliveryInfo.color}`}>
@@ -1092,10 +1193,12 @@ function BookingDetailView({ booking, onBack, onStatusUpdate }) {
               )}
             </div>
 
-            {booking.notes && (
+            {localBooking.notes && (
               <div className="mt-4 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
                 <p className="text-xs text-gray-500">Notes</p>
-                <p className="text-sm text-gray-700 italic">"{booking.notes}"</p>
+                <p className="text-sm text-gray-700 italic">
+                  "{localBooking.notes}"
+                </p>
               </div>
             )}
           </div>
@@ -1107,82 +1210,132 @@ function BookingDetailView({ booking, onBack, onStatusUpdate }) {
         <div className="max-w-7xl mx-auto">
           <div className="mb-3">
             <h4 className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-              <StatusIcon className={`w-4 h-4 ${currentStatusConfig?.textColor || 'text-gray-600'}`} />
+              <StatusIcon
+                className={`w-4 h-4 ${currentStatusConfig?.textColor || "text-gray-600"}`}
+              />
               Update Order Status
             </h4>
-            <p className="text-xs text-gray-500">Click a status below to update the order</p>
+            <p className="text-xs text-gray-500">
+              {isStatusChangeAllowed() 
+                ? 'Click a status below to update the order' 
+                : 'This order is locked and cannot be modified'}
+            </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
-            {statusOptions.map((option) => {
-              const isSelected = selectedStatus === option.value;
-              const Icon = option.icon;
-              const isDisabled = isUpdating || isSelected;
-              
-              return (
-                <button
-                  key={option.value}
-                  onClick={() => !isDisabled && handleStatusChange(option.value)}
-                  disabled={isDisabled}
-                  className={`
-                    px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200
-                    flex items-center gap-2
-                    ${isSelected 
-                      ? `${option.color} text-white shadow-md ring-2 ring-offset-2 ring-${option.value}-500` 
-                      : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400'
-                    }
-                    ${isDisabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
-                    hover:scale-105 transform
-                  `}
-                >
-                  <Icon className="w-4 h-4" />
-                  {option.label}
-                  {isSelected && <Check className="w-3 h-3 ml-1" />}
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Status History Display */}
-          {booking.statusUpdateHistory && booking.statusUpdateHistory.length > 0 && (
-            <div className="mt-4">
-              <div className="flex items-center gap-2 text-xs text-gray-500 mb-2">
-                <Clock className="w-3 h-3" />
-                <span className="font-medium">Status History</span>
-              </div>
-              <div className="space-y-1 max-h-32 overflow-y-auto">
-                {getStatusHistory().slice().reverse().map((update, idx) => (
-                  <div key={idx} className="flex items-start gap-2 text-xs p-2 bg-white rounded-lg border border-gray-100">
-                    <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${statusConfig[update.status]?.badgeColor || 'bg-gray-100 text-gray-800'}`}>
-                      {update.label}
-                    </span>
-                    <span className="text-gray-600 flex-1">{update.note}</span>
-                    {update.pickupDate && update.pickupTime && (
-                      <span className="text-blue-600 whitespace-nowrap">
-                        📅 {update.pickupDate} at {update.pickupTime}
-                      </span>
-                    )}
-                    <span className="text-gray-400 whitespace-nowrap">
-                      {new Date(update.date).toLocaleString()}
-                    </span>
-                  </div>
-                ))}
+          {!isStatusChangeAllowed() && (
+            <div className="mt-3 p-3 bg-amber-50 rounded-lg border border-amber-200">
+              <div className="flex items-center gap-2 text-sm text-amber-700">
+                <Ban className="w-4 h-4 text-amber-500" />
+                <span>
+                  This order is <strong>{statusConfig[localBooking.status]?.label || localBooking.status}</strong> and cannot be modified further.
+                </span>
               </div>
             </div>
           )}
 
+          <div className="flex flex-wrap items-center gap-2">
+            {statusOptions.length === 0 ? (
+              <div className="flex items-center gap-2 p-2 text-sm text-gray-500">
+                <Ban className="w-4 h-4" />
+                <span>No status changes available for completed or cancelled orders</span>
+              </div>
+            ) : (
+              statusOptions.map((option) => {
+                const isSelected = selectedStatus === option.value;
+                const Icon = option.icon;
+                const isDisabled = isUpdating || isSelected || !isStatusChangeAllowed();
+
+                return (
+                  <button
+                    key={option.value}
+                    onClick={() =>
+                      !isDisabled && handleStatusChange(option.value)
+                    }
+                    disabled={isDisabled}
+                    className={`
+                      px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200
+                      flex items-center gap-2
+                      ${
+                        isSelected
+                          ? `${option.color} text-white shadow-md ring-2 ring-offset-2 ring-${option.value}-500`
+                          : isDisabled
+                          ? "bg-gray-100 border border-gray-200 text-gray-400 cursor-not-allowed"
+                          : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400"
+                      }
+                      ${isDisabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
+                      ${!isDisabled ? "hover:scale-105 transform" : ""}
+                    `}
+                  >
+                    <Icon className="w-4 h-4" />
+                    {option.label}
+                    {isSelected && <Check className="w-3 h-3 ml-1" />}
+                  </button>
+                );
+              })
+            )}
+          </div>
+
+          {/* Status History Display */}
+          {localBooking.statusUpdateHistory &&
+            localBooking.statusUpdateHistory.length > 0 && (
+              <div className="mt-4">
+                <div className="flex items-center gap-2 text-xs text-gray-500 mb-2">
+                  <Clock className="w-3 h-3" />
+                  <span className="font-medium">Status History</span>
+                </div>
+                <div className="space-y-1 max-h-32 overflow-y-auto">
+                  {getStatusHistory()
+                    .slice()
+                    .reverse()
+                    .map((update, idx) => (
+                      <div
+                        key={idx}
+                        className="flex items-start gap-2 text-xs p-2 bg-white rounded-lg border border-gray-100"
+                      >
+                        <span
+                          className={`px-2 py-0.5 rounded-full text-xs font-medium ${statusConfig[update.status]?.badgeColor || "bg-gray-100 text-gray-800"}`}
+                        >
+                          {update.label}
+                        </span>
+                        <span className="text-gray-600 flex-1">
+                          {update.note}
+                        </span>
+                        {update.pickupDate && update.pickupTime && (
+                          <span className="text-blue-600 whitespace-nowrap">
+                            📅 {update.pickupDate} at {update.pickupTime}
+                          </span>
+                        )}
+                        <span className="text-gray-400 whitespace-nowrap">
+                          {new Date(update.date).toLocaleString()}
+                        </span>
+                      </div>
+                    ))}
+                </div>
+              </div>
+            )}
+
           {/* Current Status Info */}
           <div className="mt-3 flex items-center gap-3 text-xs text-gray-500">
             <span className="font-medium">Current Status:</span>
-            <span className={`px-2 py-0.5 rounded-full font-medium ${currentStatusConfig?.badgeColor || 'bg-gray-100 text-gray-800'}`}>
-              {currentStatusConfig?.label || booking.status}
+            <span
+              className={`px-2 py-0.5 rounded-full font-medium ${currentStatusConfig?.badgeColor || "bg-gray-100 text-gray-800"}`}
+            >
+              {currentStatusConfig?.label || localBooking.status}
             </span>
-            {booking.statusUpdateHistory && booking.statusUpdateHistory.length > 0 && (
-              <>
-                <span>•</span>
-                <span>Last updated: {new Date(booking.statusUpdateHistory[booking.statusUpdateHistory.length - 1].date).toLocaleString()}</span>
-              </>
-            )}
+            {localBooking.statusUpdateHistory &&
+              localBooking.statusUpdateHistory.length > 0 && (
+                <>
+                  <span>•</span>
+                  <span>
+                    Last updated:{" "}
+                    {new Date(
+                      localBooking.statusUpdateHistory[
+                        localBooking.statusUpdateHistory.length - 1
+                      ].date,
+                    ).toLocaleString()}
+                  </span>
+                </>
+              )}
           </div>
         </div>
       </div>
@@ -1191,7 +1344,7 @@ function BookingDetailView({ booking, onBack, onStatusUpdate }) {
       {showStatusNote && pendingStatus && (
         <StatusNoteModal
           status={pendingStatus}
-          booking={booking}
+          booking={localBooking}
           onClose={() => {
             setShowStatusNote(false);
             setPendingStatus(null);
@@ -1203,9 +1356,7 @@ function BookingDetailView({ booking, onBack, onStatusUpdate }) {
   );
 }
 
-
 // MAIN COMPONENT
-
 function OrderManagement() {
   const { bookings, updateBooking, isLoadingOrders, ordersError, refetchOrders } = useOrders();
   const [searchTerm, setSearchTerm] = useState('');
@@ -1288,7 +1439,8 @@ function OrderManagement() {
     setSelectedBooking(null);
   };
 
-  const handleStatusUpdate = async (bookingId, statusData) => {
+  // Helper function to update local booking
+  const updateLocalBooking = (bookingId, statusData) => {
     const booking = bookings.find(b => b.id === bookingId);
     if (!booking) return;
 
@@ -1308,12 +1460,10 @@ function OrderManagement() {
       notes: statusData.note ? `${booking.notes || ''} | ${statusData.note}` : booking.notes
     };
 
-    // If paymentStatus is provided, update it
     if (statusData.paymentStatus) {
       updateData.paymentStatus = statusData.paymentStatus;
     }
 
-    // If status is pickup and we have pickup date, update it
     if (statusData.status === 'pickup' && statusData.pickupDate) {
       updateData.pickupDate = statusData.pickupDate;
     }
@@ -1323,32 +1473,50 @@ function OrderManagement() {
     if (selectedBooking?.id === bookingId) {
       setSelectedBooking({
         ...selectedBooking,
-        status: statusData.status,
-        statusUpdateHistory: newHistory,
-        notes: statusData.note ? `${selectedBooking.notes || ''} | ${statusData.note}` : selectedBooking.notes,
+        ...updateData,
         pickupDate: statusData.pickupDate || selectedBooking.pickupDate,
         paymentStatus: statusData.paymentStatus || selectedBooking.paymentStatus
       });
     }
+  };
 
+  const handleStatusUpdate = async (bookingId, statusData) => {
+    const booking = bookings.find(b => b.id === bookingId);
+    if (!booking) {
+      console.error('Booking not found:', bookingId);
+      return;
+    }
+
+    // Prevent status update if booking is completed or cancelled
+    if (booking.status === 'completed' || booking.status === 'cancelled') {
+      alert(`Cannot update status. Order is already ${booking.status}.`);
+      return;
+    }
+
+    // If no mongoId, show error but still update local state
     if (!booking.mongoId) {
       alert('Mongo order id missing. Status was not saved to the backend.');
+      updateLocalBooking(bookingId, statusData);
       return;
     }
 
     try {
-      // Prepare the payload for the API
       const payload = {
         status: statusData.status,
         note: statusData.note || ''
       };
       
-      // Add paymentStatus to payload if it's being updated
       if (statusData.paymentStatus) {
         payload.paymentStatus = statusData.paymentStatus;
       }
 
-      const response = await fetch(`${API_URL}/api/orders/${booking.mongoId}/status`, {
+      console.log('Updating order status:', {
+        bookingId: booking.mongoId,
+        status: statusData.status,
+        paymentStatus: statusData.paymentStatus
+      });
+
+      const response = await fetch(`${API_BASE}/orders/${booking.mongoId}/status`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json'
@@ -1361,8 +1529,18 @@ function OrderManagement() {
       if (!response.ok) {
         throw new Error(result.message || 'Failed to update order status');
       }
+
+      console.log('API Response:', result);
+
+      // Update local state with the response data
+      updateLocalBooking(bookingId, statusData);
+      
+      // Optionally refetch to ensure consistency
+      // await refetchOrders();
+      
     } catch (error) {
-      alert(error.message || 'Failed to update order status');
+      console.error('Status update error:', error);
+      alert(error.message || 'Failed to update order status. Please try again.');
     }
   };
 
@@ -1426,6 +1604,13 @@ function OrderManagement() {
             </h1>
             <p className="text-gray-600 mt-1">Manage all bookings and orders</p>
           </div>
+          <button
+            onClick={() => refetchOrders()}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center gap-2"
+          >
+            <RefreshCw className="w-4 h-4" />
+            Refresh
+          </button>
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
@@ -1453,10 +1638,6 @@ function OrderManagement() {
             <p className="text-sm text-gray-500">Completed</p>
             <p className="text-2xl font-bold text-green-600">{stats.completed}</p>
           </div>
-          {/* <div className="bg-white rounded-lg shadow-sm p-4 border-l-4 border-red-500 hover:shadow-md transition">
-            <p className="text-sm text-gray-500">Cancelled</p>
-            <p className="text-2xl font-bold text-red-600">{stats.cancelled}</p>
-          </div> */}
         </div>
 
         <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
@@ -1588,14 +1769,12 @@ function OrderManagement() {
                   <ChevronLeft className="w-4 h-4" />
                 </button>
                 
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page, index, array) => {
-                  // Show first page, last page, current page, and pages around current
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page, index, array) => { 
                   const isFirstPage = page === 1;
                   const isLastPage = page === totalPages;
                   const isCurrentPage = page === currentPage;
                   const isNearCurrent = Math.abs(page - currentPage) <= 1;
                   
-                  // Always show first page, last page, current page, and pages adjacent to current
                   if (isFirstPage || isLastPage || isCurrentPage || isNearCurrent) {
                     return (
                       <button
@@ -1613,7 +1792,6 @@ function OrderManagement() {
                     );
                   }
                   
-                  // Show ellipsis for gaps
                   const prevPage = array[index - 1];
                   const nextPage = array[index + 1];
                   const showEllipsis = 
@@ -1647,8 +1825,6 @@ function OrderManagement() {
     </div>
   );
 }
-
- 
 
 export default OrderManagement;
 export { MOCK_BOOKINGS, useOrders, OrderProvider };

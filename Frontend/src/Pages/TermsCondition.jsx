@@ -71,9 +71,7 @@ const API_URL = import.meta.env.VITE_API_URL;
               <h1 className="mt-6 text-3xl sm:text-4xl md:text-6xl font-extrabold leading-tight bg-gradient-to-r from-[#0f3d7a] via-[#2563eb] to-[#38bdf8] bg-clip-text text-transparent">
                 Terms & Conditions
               </h1>
-              <p className="mt-4 text-gray-500 text-sm md:text-lg">
-                Last Updated: October 24, 2024
-              </p>
+               
             </div>
 
             {/* ================= ACCORDION START ================= */}
@@ -130,27 +128,27 @@ const API_URL = import.meta.env.VITE_API_URL;
             )}
 
             {/* ================= ACKNOWLEDGEMENT ================= */}
-            <div className="mt-12 md:mt-16">
-              <div className="bg-white/90 backdrop-blur-md border border-blue-100 rounded-3xl shadow-xl p-6 md:p-10 text-center">
+            {/* <div className="mt-12 md:mt-16">
+              <div className="bg-white/90 backdrop-blur-md border border-blue-100 rounded-3xl shadow-xl p-6 md:p-10 text-center"> */}
                 {/* Icon */}
-                <div className="w-20 h-20 md:w-24 md:h-24 mx-auto rounded-full bg-gradient-to-r from-blue-100 to-cyan-100 flex items-center justify-center shadow-lg">
+                {/* <div className="w-20 h-20 md:w-24 md:h-24 mx-auto rounded-full bg-gradient-to-r from-blue-100 to-cyan-100 flex items-center justify-center shadow-lg">
                   <FaShieldAlt className="text-4xl md:text-5xl text-[#0f3d7a]" />
-                </div>
+                </div> */}
 
                 {/* Heading */}
-                <h2 className="mt-6 text-2xl md:text-4xl font-bold text-[#0f3d7a]">
+                {/* <h2 className="mt-6 text-2xl md:text-4xl font-bold text-[#0f3d7a]">
                   Acknowledgment
-                </h2>
+                </h2> */}
 
                 {/* Paragraph */}
-                <p className="mt-5 text-sm md:text-base text-gray-600 leading-7 md:leading-8 max-w-3xl mx-auto">
-                  By clicking the button below, you confirm that you have
+                {/* <p className="mt-5 text-sm md:text-base text-gray-600 leading-7 md:leading-8 max-w-3xl mx-auto"> */}
+                  {/* By clicking the button below, you confirm that you have
                   read, understood and agreed to the Athenura Terms &
-                  Conditions and Privacy Policy.
-                </p>
+                  Conditions and Privacy Policy. */}
+                {/* </p> */}
 
                 {/* Buttons */}
-                <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+                {/* <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
                   <button
                     className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-[#0f3d7a] via-[#2563eb] to-[#38bdf8] text-white font-semibold hover:scale-105 transition duration-300"
                   >
@@ -163,9 +161,9 @@ const API_URL = import.meta.env.VITE_API_URL;
                     <FaFileDownload />
                     Download PDF
                   </button>
-                </div>
-              </div>
-            </div>
+                </div> */}
+              {/* </div>
+            </div> */}
 
           </div>
         </div>

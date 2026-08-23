@@ -23,25 +23,21 @@ const MyOrders = () => {
   const navigate = useNavigate();
 
 
-  const handleReorder = (order) => {
-    // 1. Map the stored order items back into the format your checkout expects
+  const handleReorder = (order) => { 
     const reorderItems = order.items.map(item => ({
         clothType: item.name,
         serviceType: item.category,
         quantity: item.quantity,
         price: item.price
     }));
-
-    // 2. Prepare the checkout data
+ 
     const newCheckoutData = {
         items: reorderItems,
         address: order.shippingAddress 
     };
-
-    // 3. Save to localStorage so your Checkout page picks it up
+ 
     localStorage.setItem("checkoutData", JSON.stringify(newCheckoutData));
-
-    // 4. Navigate to checkout
+ 
     navigate("/checkout");
 };
 
@@ -126,7 +122,8 @@ const MyOrders = () => {
             name: i.name || i.clothType || "Item",
             quantity: Number(i.quantity || 0),
             price: Number(i.price || 0),
-            unitPrice: Number(i.unitPrice ?? (Number(i.quantity || 0) ? Number(i.price || 0) / Number(i.quantity || 1) : Number(i.price || 0))),
+            unitPrice: Number(i.unitPrice || i.price || 0),
+            totalPrice: Number(i.quantity || 0)*Number(i.unitPrice || i.price || 0),
             estDelivery: i.estDelivery || "24-48 Hours"
           })),
           summary: {
@@ -167,15 +164,9 @@ const MyOrders = () => {
     const interval = setInterval(() => fetchOrders(true), 4000);
     return () => clearInterval(interval);
   }, []);
-
-  // Use the same handleOrderClick, handleBackToList, and JSX render logic 
-  // from the code you just pasted in your previous message.
-  // The structure above ensures that 'order.summary.grandTotal' 
-  // will now exist and be populated correctly!
-
-  // ... (Paste your full UI JSX here, it will now work perfectly)
+  
   const handleOrderClick = (order) => {
-  console.log("Selected Order Data:", order); // ADD THIS LINE
+  console.log("Selected Order Data:", order); 
   setIsLoading(true);
   window.scrollTo({ top: 0, behavior: 'smooth' });
   setTimeout(() => {
@@ -196,11 +187,10 @@ const MyOrders = () => {
     if (activeTab === 'All') return true;
     return order.status.toLowerCase() === activeTab.toLowerCase();
   });
-
-  // --- LOADING RENDER WRAPPER ---
+ 
   if (isLoading) {
     return (
-      <UserLayout> {/* WRAPPED WITH UserLayout */}
+      <UserLayout>  
         <div className="w-full">
           <div className="w-full max-w-5xl mx-auto p-6 space-y-6 font-sans animate-pulse">
             <div className="h-8 bg-gray-200 rounded-lg w-1/4 mb-4"></div>
@@ -214,12 +204,11 @@ const MyOrders = () => {
       </UserLayout>
     );
   }
-
-  // --- ORDER DETAILS SUBPAGE ---
+ 
   if (selectedOrder) {
     const order = selectedOrder;
     return (
-      <UserLayout> {/* WRAPPED WITH UserLayout */}
+      <UserLayout> 
         <div className="w-full">
           <div className="w-full max-w-5xl mx-auto p-4 md:p-6 space-y-6 font-sans text-gray-800 transition-all duration-300 ease-in-out">
             
@@ -258,8 +247,7 @@ const MyOrders = () => {
                 {/* <button className="flex-1 md:flex-initial flex items-center justify-center gap-1.5 px-4 py-2 bg-blue-50 text-blue-600 text-xs font-bold rounded-xl hover:bg-blue-100 transition">
                   <Download size={14} /> Invoice
                 </button> */}
-                 <button 
-  // Update this line:
+                 <button  
   onClick={() => handleReorder(order)} 
   className="flex-1 md:flex-initial flex items-center justify-center cursor-pointer gap-1.5 px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded-xl hover:bg-blue-700 shadow-sm shadow-blue-200 transition"
 >
@@ -351,7 +339,7 @@ const MyOrders = () => {
                       <p className="text-xs text-gray-500">{item.quantity} units × ₹{item.unitPrice}/pc</p>
                     </div>
                     <div className="text-right flex flex-col justify-between items-end">
-                      <span className="text-sm font-black text-gray-900">₹{item.price}</span>
+                      <span className="text-sm font-black text-gray-900">₹{item.totalPrice}</span>
                       <span className="text-[10px] text-gray-400 bg-gray-50 px-1.5 py-0.5 rounded border flex items-center gap-1"><Clock size={10}/>{item.estDelivery}</span>
                     </div>
                   </div>
@@ -368,10 +356,10 @@ const MyOrders = () => {
                     <span>Total Service Charge</span>
                     <span className="font-semibold text-gray-800">₹{order.summary.subtotal}</span>
                   </div>
-                  <div className="flex justify-between text-gray-500">
+                  {/* <div className="flex justify-between text-gray-500">
                     <span>Rider Logistics Fees</span>
                     <span className="font-semibold text-gray-800">₹49</span>
-                  </div>
+                  </div> */}
                   {order.summary.discount > 0 && (
                     <div className="flex justify-between text-emerald-600 bg-emerald-50 p-1.5 rounded border border-emerald-100">
                       <span className="flex items-center gap-1"><Tag size={12}/> Campaign Coupon</span>
@@ -392,10 +380,9 @@ const MyOrders = () => {
       </UserLayout>
     );
   }
-
-  // --- MAIN RECENT ORDER HISTORY VIEW ---
+ 
   return (
-    <UserLayout> {/* WRAPPED WITH UserLayout */}
+    <UserLayout>  
       <div className="w-full">
         <div className="w-full max-w-5xl mx-auto p-4 md:p-6 space-y-6 font-sans text-gray-800 transition-all duration-300 ease-in-out">
           
@@ -425,7 +412,7 @@ const MyOrders = () => {
           <div className="space-y-4">
             {filteredOrders.slice(0, viewingAll ? filteredOrders.length : 3).map((order, index) => (
   <div 
-    key={`${order.orderNo}-${index}`} // <--- CHANGE THIS LINE HERE
+    key={`${order.orderNo}-${index}`}  
     onClick={() => handleOrderClick(order)}
                 className="group bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:border-blue-200 hover:shadow-md cursor-pointer transition-all duration-200"
               >
