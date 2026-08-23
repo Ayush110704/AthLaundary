@@ -37,9 +37,7 @@ import {
   Layers
 } from 'lucide-react';
 
-
 // STAT CARD COMPONENT
-
 function StatCard({ title, value, icon: Icon, color, trend, trendValue, subtitle }) {
   return (
     <div className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-all duration-300">
@@ -70,9 +68,7 @@ function StatCard({ title, value, icon: Icon, color, trend, trendValue, subtitle
   );
 }
 
-
 // CHART COMPONENTS
-
 function RevenueChart({ data }) {
   // Calculate max value, default to 1 if all values are 0
   const maxValue = Math.max(...data.map(d => d.value), 1);
@@ -289,18 +285,14 @@ function StatusChart({ data }) {
   );
 }
 
-
 // MAIN ANALYTICS COMPONENT
-
 function Analytics() {
   // Use real data from context
   const { bookings } = useOrders();
   const [selectedMetric, setSelectedMetric] = useState('revenue');
   const [loading, setLoading] = useState(false);
 
-  
   // COMPUTED STATISTICS
- 
   const totalOrders = bookings.length;
   const totalRevenue = bookings.reduce((sum, b) => sum + b.totalAmount, 0);
   const completedOrders = bookings.filter(b => b.status?.toLowerCase() === 'completed').length;
@@ -310,7 +302,6 @@ function Analytics() {
   }).length;
   const pendingOrders = bookings.filter(b => b.status?.toLowerCase() === 'pickup' || b.status?.toLowerCase() === 'pending').length;
   const cancelledOrders = bookings.filter(b => b.status?.toLowerCase() === 'cancelled').length;
- 
   
   const avgOrderValue = totalOrders > 0 ? Math.round(totalRevenue / totalOrders) : 0;
   const completionRate = totalOrders > 0 ? Math.round((completedOrders / totalOrders) * 100) : 0;
@@ -430,9 +421,7 @@ function Analytics() {
     .sort(([, a], [, b]) => b - a)
     .map(([name, count]) => ({ name, count }));
 
-  
   // HANDLERS
- 
   const handleRefresh = () => {
     setLoading(true);
     setTimeout(() => {
@@ -440,9 +429,7 @@ function Analytics() {
     }, 1000);
   };
 
-
   // RENDER
- 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6">
       <div className="max-w-7xl mx-auto">
@@ -460,7 +447,6 @@ function Analytics() {
             <p className="text-gray-600 mt-1">Real-time insights from your orders</p>
           </div>
           
-          {/* Removed: Date Range Selector and Export Report Button */}
           <button
             onClick={handleRefresh}
             className="p-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
@@ -511,7 +497,6 @@ function Analytics() {
             trend={avgOrderValue > 0 ? "up" : "down"}
             trendValue={avgOrderValue > 0 ? "3.7%" : "0%"}
           />
-         
         </div>
 
         {/* MAIN CHARTS ROW */}
@@ -529,55 +514,100 @@ function Analytics() {
           <ServiceDistributionChart data={serviceDistribution} />
           <PaymentMethodChart data={paymentDistribution} />
         </div>
- 
-{/* MONTHLY TREND */}
-<div className="bg-white rounded-xl shadow-sm p-6 mb-6">
-  <div className="flex items-center justify-between mb-6">
-    <div>
-      <h3 className="text-lg font-semibold text-gray-900">Monthly Revenue Trend</h3>
-      <p className="text-sm text-gray-500">Revenue performance over the last 6 months</p>
-    </div>
-   
-  </div>
-  
-  <div className="h-64 relative">
-    <div className="absolute inset-0 flex items-end justify-around px-4 pb-8">
-      {monthlyRevenue.map((item, index) => {
-        // Find the maximum revenue value
-        const maxRevenue = Math.max(...monthlyRevenue.map(d => d.revenue), 1);
-        // Calculate height percentage (80% of container to leave room for labels)
-        const heightPercentage = (item.revenue / maxRevenue) * 80;
-        // Ensure minimum height for visibility
-        const barHeight = Math.max(heightPercentage, 5);
-        
-        return (
-          <div key={index} className="flex flex-col items-center justify-end h-full" style={{ flex: 1 }}>
-            {/* Revenue label */}
-            <div className="text-xs font-medium text-gray-600 mb-1">
-              ₹{item.revenue.toLocaleString()}
+
+        {/* MONTHLY TREND - WITHOUT SUMMARY STATS */}
+        <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900">Monthly Revenue Trend</h3>
+              <p className="text-sm text-gray-500">Revenue performance over the last 6 months</p>
             </div>
-            
-            {/* Bar container */}
-            <div className="w-full max-w-[60px] h-[80%] flex items-end justify-center">
-              <div 
-                className="w-full bg-gradient-to-t from-blue-500 to-blue-400 rounded-t-lg transition-all duration-700 hover:from-blue-600 hover:to-blue-500"
-                style={{ 
-                  height: `${barHeight}%`,
-                  minHeight: '8px',
-                  width: '100%',
-                  maxWidth: '50px',
-                }}
-              />
-            </div>
-            
-            {/* Month label */}
-            <span className="text-xs text-gray-500 mt-2">{item.month}</span>
           </div>
-        );
-      })}
-    </div>
-  </div>
-</div>
+          
+          <div className="h-64 relative">
+            {(() => {
+              // Find the maximum revenue value for scaling
+              const maxRevenue = Math.max(...monthlyRevenue.map(d => d.revenue), 1);
+              const hasData = monthlyRevenue.some(d => d.revenue > 0);
+              
+              // If no data, show empty state
+              if (!hasData) {
+                return (
+                  <div className="h-full flex items-center justify-center">
+                    <div className="text-center">
+                      <BarChart3 className="w-12 h-12 text-gray-300 mx-auto mb-2" />
+                      <p className="text-gray-500">No revenue data available</p>
+                      <p className="text-xs text-gray-400">Add orders to see revenue trends</p>
+                    </div>
+                  </div>
+                );
+              }
+              
+              return (
+                <div className="absolute inset-0 flex items-end justify-around px-4 pb-8">
+                  {monthlyRevenue.map((item, index) => {
+                    // If revenue is 0, show a thin gray line
+                    if (item.revenue === 0) {
+                      return (
+                        <div key={index} className="flex flex-col items-center justify-end h-full" style={{ flex: 1 }}>
+                          <div className="text-xs font-medium text-gray-400 mb-1">₹0</div>
+                          <div className="w-full max-w-[60px] h-[80%] flex items-end justify-center">
+                            <div 
+                              className="w-full rounded-t-lg transition-all duration-700"
+                              style={{ 
+                                height: '2px',
+                                minHeight: '2px',
+                                width: '100%',
+                                maxWidth: '50px',
+                                backgroundColor: '#E5E7EB'
+                              }}
+                            />
+                          </div>
+                          <span className="text-xs text-gray-400 mt-2">{item.month}</span>
+                        </div>
+                      );
+                    }
+                    
+                    // Calculate height percentage based on revenue
+                    const heightPercentage = (item.revenue / maxRevenue) * 80;
+                    // Minimum height for visibility (only for values > 0)
+                    const barHeight = Math.max(heightPercentage, 8);
+                    
+                    return (
+                      <div key={index} className="flex flex-col items-center justify-end h-full" style={{ flex: 1 }}>
+                        {/* Revenue label */}
+                        <div className="text-xs font-medium text-gray-600 mb-1">
+                          ₹{item.revenue.toLocaleString()}
+                        </div>
+                        
+                        {/* Bar container */}
+                        <div className="w-full max-w-[60px] h-[80%] flex items-end justify-center relative">
+                          <div 
+                            className="w-full bg-gradient-to-t from-blue-500 to-blue-400 rounded-t-lg transition-all duration-700 hover:from-blue-600 hover:to-blue-500 relative group"
+                            style={{ 
+                              height: `${barHeight}%`,
+                              minHeight: '8px',
+                              width: '100%',
+                              maxWidth: '50px',
+                            }}
+                          >
+                            {/* Tooltip on hover */}
+                            <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+                              ₹{item.revenue.toLocaleString()}
+                            </div>
+                          </div>
+                        </div>
+                        
+                        {/* Month label */}
+                        <span className="text-xs text-gray-500 mt-2">{item.month}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })()}
+          </div>
+        </div>
 
         {/* INSIGHTS SECTION */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -607,14 +637,14 @@ function Analytics() {
           </div>
 
           {/* Popular Services */}
-          {/* <div className="bg-white rounded-xl shadow-sm p-6">
+          <div className="bg-white rounded-xl shadow-sm p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
               <Layers className="w-5 h-5 text-purple-500" />
               Popular Services
             </h3>
             <div className="space-y-3">
               {popularServices.length > 0 ? (
-                popularServices.map((service, index) => (
+                popularServices.slice(0, 5).map((service, index) => (
                   <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 font-bold text-sm">
@@ -629,10 +659,8 @@ function Analytics() {
                 <p className="text-center text-gray-500 py-8">No services yet</p>
               )}
             </div>
-          </div> */}
+          </div>
         </div>
-
-        
       </div>
     </div>
   );
