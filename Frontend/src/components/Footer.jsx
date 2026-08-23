@@ -10,7 +10,9 @@ import {
   FaEnvelope,
   FaPhoneAlt,
   FaMapMarkerAlt,
+  
 } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
 
 // Animation variants
 const containerVariants = {
@@ -307,7 +309,9 @@ function Footer() {
                 animate="visible"
                 custom={0}
               >
-                <FaFacebookF className="text-white group-hover:rotate-12 transition-transform duration-300" />
+                <a href="https://x.com/athenura_in" target="_blank">
+                <FaXTwitter className="text-white group-hover:rotate-12 transition-transform duration-300" />
+              </a>
               </motion.div>
 
               <motion.div
@@ -317,14 +321,19 @@ function Footer() {
                 initial="hidden"
                 animate="visible"
                 custom={1}
-              >
+              > 
                 <a
                   href="https://www.linkedin.com/company/athenura/posts/?feedView=all"
                   target="blank"
                 >
                   <FaLinkedinIn className="text-white group-hover:rotate-12 transition-transform duration-300 text-lg" />
                 </a>
-              </motion.div>
+              </motion.div> 
+                <a  href="https://www.linkedin.com/company/athenura/posts/?feedView=all"
+                target="_blank">
+                <FaLinkedinIn className="text-white group-hover:rotate-12 transition-transform duration-300 text-lg" />
+             </a> 
+             </motion.div> 
 
               <motion.div
                 className="group w-10 h-10 rounded-full bg-white/10 flex items-center justify-center cursor-pointer transition-colors duration-300 hover:bg-gradient-to-tr hover:from-[#feda75] hover:via-[#d62976] hover:to-[#4f5bd5] hover:shadow-lg hover:shadow-pink-500/30"
@@ -333,10 +342,12 @@ function Footer() {
                 initial="hidden"
                 animate="visible"
                 custom={2}
-              >
+              > 
                 <a
                   href="https://www.instagram.com/athenura.in?igsh=MXg4MWtrenA2ZHF4Zw=="
-                  target="blank"
+                  target="blank" 
+                <a href="https://www.instagram.com/athenura.in?igsh=MXg4MWtrenA2ZHF4Zw=="
+                target="_blank" 
                 >
                   <FaInstagram className="text-white group-hover:rotate-12 transition-transform duration-300 text-lg" />
                 </a>
@@ -350,7 +361,9 @@ function Footer() {
                 animate="visible"
                 custom={3}
               >
+                <a href="https://www.youtube.com/@Athenura" target="_blank">
                 <FaYoutube className="text-white group-hover:rotate-12 transition-transform duration-300" />
+             </a>
               </motion.div>
             </motion.div>
           </motion.div>
@@ -494,7 +507,7 @@ function Footer() {
                   transition={{ duration: 0.3 }}
                 >
                   <FaEnvelope className="text-blue-400 mt-1" />
-                </motion.div>
+                </motion.div> 
                 <a
                   href="mailto:support@athenura.com"
                   className="flex items-center gap-2 group"
@@ -502,7 +515,10 @@ function Footer() {
                   <span className="group-hover:underline decoration-blue-400 underline-offset-2">
                     support@athenura.com
                   </span>
-                </a>
+                </a> 
+                <span className="group-hover:underline decoration-blue-400 underline-offset-2">
+                  official@athenura.in
+                </span> 
               </motion.div>
 
               <motion.div
@@ -516,7 +532,7 @@ function Footer() {
                   transition={{ duration: 0.3 }}
                 >
                   <FaPhoneAlt className="text-green-400 mt-1" />
-                </motion.div>
+                </motion.div> 
                 <a
                   href="tel:+918765432109"
                   className="flex items-center gap-2 group"
@@ -524,7 +540,10 @@ function Footer() {
                   <span className="group-hover:underline decoration-green-400 underline-offset-2">
                     +91 87654 32109
                   </span>
-                </a>
+                </a> 
+                <span className="group-hover:underline decoration-green-400 underline-offset-2">
+                  +91 98350 51934
+                </span> 
               </motion.div>
 
               <motion.div
@@ -540,7 +559,7 @@ function Footer() {
                   <FaMapMarkerAlt className="text-red-400 mt-1" />
                 </motion.div>
                 <span className="group-hover:underline decoration-red-400 underline-offset-2">
-                  Ghaziabad, Uttar Pradesh
+                Sector 62, Noida, Uttar Pradesh
                 </span>
               </motion.div>
             </div>

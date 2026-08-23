@@ -380,7 +380,12 @@ const AdminDashboard = () => {
                           {activity.action} • {activity.timestamp ? new Date(activity.timestamp).toLocaleString() : ''}
                         </p>
                       </div>
-                    </div> 
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-gray-400">
+                        {activity.time || formatTime(activity.timestamp)}
+                      </span>
+                    </div>
                   </motion.div>
                 ))
               ) : (
