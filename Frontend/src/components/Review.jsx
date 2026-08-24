@@ -1,4 +1,3 @@
-// components/Review.jsx
 import React from 'react';
 import { Star } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -6,65 +5,64 @@ import Carousel from '../Ui/Carousel';
 
 const Review = () => {
   const reviews = [
-    {
+   {
       id: 1,
-      name: "Sarah Johnson",
+      name: "Priya Sharma",
       rating: 5,
       review:
         "Excellent service! My clothes came back perfectly cleaned, folded, and delivered on time. Highly recommended.",
     },
     {
       id: 2,
-      name: "Michael Brown",
+      name: "Rajesh Kumar",
       rating: 4,
       review:
         "The pickup and delivery process was super convenient. Their stain removal service is impressive.",
     },
     {
       id: 3,
-      name: "Emma Wilson",
+      name: "Ananya Reddy",
       rating: 4,
       review:
         "Very professional staff and affordable pricing. My shirts looked brand new after washing.",
     },
     {
       id: 4,
-      name: "Daniel Miller",
+      name: "Vikram Singh",
       rating: 5,
       review:
         "Fast turnaround and great customer support. This has become my go-to laundry service.",
     },
     {
       id: 5,
-      name: "Jessica Taylor",
+      name: "Meera Iyer",
       rating: 5,
       review:
         "Absolutely love this service! They handle delicate fabrics with care and always return my items smelling fresh.",
     },
     {
       id: 6,
-      name: "David Clark",
+      name: "Arjun Nair",
       rating: 4,
       review:
         "Reliable and punctual. The online booking system is very user-friendly and the quality is consistently good.",
     },
     {
       id: 7,
-      name: "Amanda White",
+      name: "Kavya Menon",
       rating: 5,
       review:
         "Best laundry service in town! They even remembered my preferences for folding and packaging. Truly personalized service.",
     },
     {
       id: 8,
-      name: "Robert Green",
+      name: "Suresh Patil",
       rating: 4,
       review:
         "Great value for money. My clothes are always perfectly pressed and the customer service team is very responsive.",
     }
   ];
-
-  // Create duplicates for seamless infinite scroll
+ 
   const duplicatedReviews = [...reviews, ...reviews, ...reviews];
 
   // Review Card Component
