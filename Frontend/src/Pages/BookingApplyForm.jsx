@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   User,
@@ -16,6 +16,14 @@ import Swal from 'sweetalert2'
 
 const BookingApplyForm = ({ checkoutData, setCheckoutData, setCurrentStep, }) => {
   const API_URL = import.meta.env.VITE_API_URL;
+  const FALLBACK_SERVICE_OPTIONS = [
+    { value: "Laundry", label: "Laundry" },
+    { value: "Dry Cleaning", label: "Dry Cleaning" },
+    { value: "Shoe Cleaning", label: "Shoe Cleaning" },
+    { value: "Ironing", label: "Ironing" },
+    { value: "Curtain Cleaning", label: "Curtain Cleaning" },
+    { value: "Carpet Cleaning", label: "Carpet Cleaning" },
+  ];
   const [formData, setFormData] = useState({
     fullName: "",
     phone: "",
@@ -30,7 +38,41 @@ const BookingApplyForm = ({ checkoutData, setCheckoutData, setCurrentStep, }) =>
   const [errors, setErrors] = useState({});
   const [submitted, setSubmitted] = useState(false);
   const [dbServices, setDbServices] = useState([]);
+  const [isLoadingServices, setIsLoadingServices] = useState(true);
+  const [serviceFetchFailed, setServiceFetchFailed] = useState(false);
+  const isInitialLoadRef = useRef(true);
   const navigate = useNavigate();
+
+  const fetchServices = async () => {
+    if (isInitialLoadRef.current) {
+      setIsLoadingServices(true);
+    }
+    setServiceFetchFailed(false);
+    try {
+      const res = await fetch(`${API_URL}/api/services`, {
+        cache: "no-store",
+        headers: {
+          "Cache-Control": "no-cache",
+          Pragma: "no-cache",
+        },
+      });
+      const result = await res.json();
+      if (result.success) {
+        setDbServices(result.data);
+      } else {
+        setServiceFetchFailed(true);
+        console.warn("Service fetch returned a non-success response; falling back to static checkout service options.");
+      }
+    } catch (error) {
+      setServiceFetchFailed(true);
+      console.warn("Error fetching services in BookingApplyForm; falling back to static checkout service options.", error);
+    } finally {
+      if (isInitialLoadRef.current) {
+        setIsLoadingServices(false);
+        isInitialLoadRef.current = false;
+      }
+    }
+  };
 
   // Load user data from localStorage on component mount and fetch DB services
   useEffect(() => {
@@ -66,19 +108,28 @@ const BookingApplyForm = ({ checkoutData, setCheckoutData, setCurrentStep, }) =>
     };
 
     loadCurrentUserProfile();
+    fetchServices();
+  }, []);
 
-    const fetchServices = async () => {
-      try {
-        const res = await fetch(`${API_URL}/api/services`);
-        const result = await res.json();
-        if (result.success) {
-          setDbServices(result.data);
-        }
-      } catch (error) {
-        console.error("Error fetching services in BookingApplyForm:", error);
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        fetchServices();
       }
     };
-    fetchServices();
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, []);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      fetchServices();
+    }, 20000);
+
+    return () => clearInterval(intervalId);
   }, []);
 
   const cardBase =
@@ -276,6 +327,17 @@ if (swalResult.isConfirmed) {
     (s) => s.name.toLowerCase() === formData.serviceType.toLowerCase()
   );
 
+  const activeDbServiceOptions = dbServices
+    .filter((service) => service.status === "Active")
+    .map((service) => ({
+      value: service.name,
+      label: service.name,
+    }));
+
+  const serviceOptions = serviceFetchFailed
+    ? FALLBACK_SERVICE_OPTIONS
+    : activeDbServiceOptions;
+
   const dropdownItems = selectedServiceObj && selectedServiceObj.items && selectedServiceObj.items.length > 0
     ? selectedServiceObj.items
     : (DEFAULT_CATEGORY_ITEMS[formData.serviceType] || []);
@@ -436,16 +498,21 @@ if (swalResult.isConfirmed) {
                     value={formData.serviceType}
                     onChange={handleChange}
                     className={inputStyle}
-
-
                   >
-                   <option value="">Select Service</option>
-                    <option value="Laundry">Laundry</option>
-                    <option value="Dry Cleaning">Dry Cleaning</option>
-                    <option value="Shoe Cleaning">Shoe Cleaning</option>
-                    <option value="Ironing">Ironing</option>
-                    <option value="Curtain Cleaning">Curtain Cleaning</option>
-                    <option value="Carpet Cleaning">Carpet Cleaning</option>
+                    {isLoadingServices ? (
+                      <option value="" disabled>
+                        Loading services...
+                      </option>
+                    ) : (
+                      <>
+                        <option value="">Select Service</option>
+                        {serviceOptions.map((service) => (
+                          <option key={service.value} value={service.value}>
+                            {service.label}
+                          </option>
+                        ))}
+                      </>
+                    )}
                   </select>
                   <ErrorText message={errors.serviceType} />
                 </div>

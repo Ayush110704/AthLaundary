@@ -94,10 +94,10 @@ const processSteps = [
 ];
 
 const teamMembers = [
-  { img: team1, name: "Sarah Chen", role: "Operations Director" },
-  { img: team2, name: "Marcus Miller", role: "Master Textile Specialist" },
-  { img: team3, name: "Elena Rodriguez", role: "Customer Success Lead" },
-  { img: team4, name: "David Park", role: "Logistics Coordinator" },
+{ img: team1, name: "Ananya Reddy", role: "Operations Director" },
+{ img: team2, name: "Vikram Singh", role: "Master Textile Specialist" },
+{ img: team3, name: "Arjun Nair", role: "Customer Success Lead" },
+{ img: team4, name: "Priya Sharma", role: "Logistics Coordinator" },
 ];
 
 const fadeInUp = {
