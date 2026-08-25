@@ -15,7 +15,7 @@ import ecoIcon from '../assets/freshandechofriendly.webp';
 
 // Laundry-Service Page Images
 
-import LaundryHeroBackground from '../assets/Laundry-Service/LaundryHerobackground1.png'
+import LaundryHeroBackground from '../assets/Laundry-Service/laundry.png'
 import LaundryHeroVector from '../assets/Laundry-Service/LaundryHeroVector.png'
 import baby from '../assets/Laundry-Service/baby.webp'
 import Curtain from '../assets/Laundry-Service/Curtain.webp'
@@ -32,7 +32,7 @@ import woolen from '../assets/Laundry-Service/woolen.webp'
 
 // DryClean-Service Page Images
 
-import DryHeroBackground from '../assets/DryClean/DryHeroBackground2.png'
+import DryHeroBackground from '../assets/DryClean/dry clean.png'
 import DryHeroVector from '../assets/DryClean/DryHeroVector.png'
 import bags from '../assets/DryClean/bags.webp'
 import Step from '../assets/DryClean/steps.webp'
@@ -73,7 +73,7 @@ import steam from '../assets/CurtainClean/steam.webp'
 import velvet from '../assets/CurtainClean/velvet.webp'
 
 // Shoe service page Images
-import ShoeHeroBackground from '../assets/ShoeClean/ShoeHeroBackground1.png'
+import ShoeHeroBackground from '../assets/ShoeClean/shoe.png'
 import ShoeHeroVector from '../assets/ShoeClean/ShoeHeroVector.png'
 import heels from '../assets/ShoeClean/heels.jpeg'
 import jordan from '../assets/ShoeClean/jordan.webp'
@@ -111,7 +111,11 @@ import { Shirt, Sparkles, Baby,  WashingMachine,
   Wind,
   Crown,
   ShieldCheck,
-Handbag} from 'lucide-react'
+Handbag,
+  Truck,
+  Clock,
+  Home,} from 'lucide-react'
+
 
 // Home Page 
 
@@ -405,54 +409,53 @@ export const ServicesData = {
       HeroBadge: " ✦ EXPERT CARE",
       HeroTitle: "Professional Laundry",
       HeroSub: "Perfect Every Time",
-
       HeroPara: "  Trusted care for every garment — pickup, clean & deliver.",
-
+      HeroStats: [{ icon: WashingMachine, title: "WASHED", subTitle: "WITH CARE" }, { icon: Layers3, title: "FOLDED", subTitle: "PERFECTLY" }, { icon: Truck, title: "ON-TIME", subTitle: "DELIVERY" }, { icon: ShieldCheck, title: "SAFE &", subTitle: "RELIABLE" }],
     },
 
     WhyUs: {
       title: "Your Clothes, Our Care",
       image: LaundrySteps,
-
     },
- ServiceOffered: [
-  {
-    id: 1,
-    image: washfold,
-    title: "Wash & Fold",
-    desc: "Get freshly cleaned, neatly folded clothes ready to wear. Our premium wash & fold service ensures gentle care and long-lasting fabric quality.",
-    icon: WashingMachine,
-    features: [
-      "Eco Friendly",
-      "Neatly Folded",
-      "24-48 Hrs",
+
+    ServiceOffered: [
+      {
+        id: 1,
+        image: washfold,
+        title: "Wash & Fold",
+        desc: "Get freshly cleaned, neatly folded clothes ready to wear. Our premium wash & fold service ensures gentle care and long-lasting fabric quality.",
+        icon: WashingMachine,
+        features: [
+          "Eco Friendly",
+          "Neatly Folded",
+          "24-48 Hrs",
+        ],
+      },
+      {
+        id: 2,
+        image: washiron,
+        title: "Wash & Iron",
+        desc: "Enjoy crisp, wrinkle-free garments with professional steam ironing. Laundrywala ensures your clothes look brand new with expert finishing.",
+        icon: Shirt,
+        features: [
+          "Steam Iron",
+          "Wrinkle Free",
+          "Premium Finish",
+        ],
+      },
+      {
+        id: 3,
+        image: woolen,
+        title: "Woolen Laundry",
+        desc: "Keep your woolens soft, fresh, and lint-free with our specialized wool care technology and eco-friendly detergents.",
+        icon: ShieldCheck,
+        features: [
+          "Gentle Care",
+          "Lint Free",
+          "Fabric Safe",
+        ],
+      },
     ],
-  },
-  {
-    id: 2,
-    image: washiron,
-    title: "Wash & Iron",
-    desc: "Enjoy crisp, wrinkle-free garments with professional steam ironing. Laundrywala ensures your clothes look brand new with expert finishing.",
-    icon: Shirt,
-    features: [
-      "Steam Iron",
-      "Wrinkle Free",
-      "Premium Finish",
-    ],
-  },
-  {
-    id: 3,
-    image: woolen,
-    title: "Woolen Laundry",
-    desc: "Keep your woolens soft, fresh, and lint-free with our specialized wool care technology and eco-friendly detergents.",
-    icon: ShieldCheck,
-    features: [
-      "Gentle Care",
-      "Lint Free",
-      "Fabric Safe",
-    ],
-  },
-],
 
     Servicetitle: "Laundry",
 
@@ -462,9 +465,7 @@ export const ServicesData = {
       { id: 1, image: Curtain, title: "Curtain & Carpet Cleaning ", desc: "Premium dry-cleaning for silk, cotton, velvet, and chenille fabrics. Keep your interiors spotless and allergen-free with Laundrywala’s expert care. " },
       { id: 2, image: baby, title: "Baby Clothes & Toy Cleaning ", desc: "Safe, hygienic wash for babywear and soft toys using dermatologically tested detergents perfect for delicate fabrics and sensitive skin. " },
       { id: 3, image: winter, title: " Winter Wear Laundry", desc: "rofessional cleaning for sweaters, coats, jeans, and pyjamas gentle on fibers, tough on dirt, and designed for freshness that lasts." }
-
     ],
-
 
     CTA: {
       type: "Laundry",
@@ -472,7 +473,6 @@ export const ServicesData = {
       headingbottom: "Hassle Free",
       subHeading: "Professional washing, folding and doorstep delivery for your everyday clothes"
     }
-
   },
 
   "DryClean-service": {
@@ -482,93 +482,91 @@ export const ServicesData = {
       HeroBadge: " ✦ EXPERT CARE",
       HeroTitle: "Professional Dry Cleaning,",
       HeroSub: "Delivered With Care",
-
       HeroPara: "  Trusted care for every garment — pickup, clean & deliver.",
-
+      HeroStats: [{ icon: Shirt, title: "EXPERT", subTitle: "CARE" }, { icon: Sparkles, title: "STAIN", subTitle: "REMOVAL" }, { icon: ShieldCheck, title: "FABRIC", subTitle: "PROTECTION" }, { icon: Clock, title: "ON-TIME", subTitle: "DELIVERY" }],
     },
 
     WhyUs: {
       title: "Your Clothes, Our Care",
       image: LaundrySteps,
-
     },
 
     Servicetitle: "Dry Cleaning",
 
     ServiceOffered: [
-  {
-    id: 1,
-    image: MenWear,
-    title: "Men's Wear",
-    desc: "Effortlessly elevate your style with our expert dry cleaning services for men's wear. From formal suits to casual outfits, we ensure you always look sharp, fresh, and polished.",
-    icon: Shirt,
-    features: [
-      "Eco Friendly",
-      "24h Delivery",
-      "Safe & Hygienic",
+      {
+        id: 1,
+        image: MenWear,
+        title: "Men's Wear",
+        desc: "Effortlessly elevate your style with our expert dry cleaning services for men's wear. From formal suits to casual outfits, we ensure you always look sharp, fresh, and polished.",
+        icon: Shirt,
+        features: [
+          "Eco Friendly",
+          "24h Delivery",
+          "Safe & Hygienic",
+        ],
+      },
+      {
+        id: 2,
+        image: WomenWear,
+        title: "Women's Wear",
+        desc: "Radiate confidence in every outfit with our professional dry cleaning services. From elegant dresses to stylish blouses, we'll refresh your wardrobe, leaving you feeling fabulous and flawless.",
+        icon: Sparkles,
+        features: [
+          "Eco Friendly",
+          "24h Delivery",
+          "Safe & Hygienic",
+        ],
+      },
+      {
+        id: 3,
+        image: kids,
+        title: "Kid's Wear",
+        desc: "Keep your little ones looking their best with our expert kids' wear cleaning services. From vibrant outfits to delicate fabrics, we ensure their clothes are fresh, clean, and ready for every adventure.",
+        icon: Baby,
+        features: [
+          "Eco Friendly",
+          "24h Delivery",
+          "Safe & Hygienic",
+        ],
+      },
+      {
+        id: 4,
+        image: leather,
+        title: "Leather / Suede / Furs",
+        desc: "Premium care for your leather, suede, and furs. Our expert dry cleaning ensures their beauty, softness, and longevity are perfectly preserved.",
+        icon: Briefcase,
+        features: [
+          "Eco Friendly",
+          "24h Delivery",
+          "Safe & Hygienic",
+        ],
+      },
+      {
+        id: 5,
+        image: gown,
+        title: "Wedding Gowns",
+        desc: "Preserve your cherished memories with our meticulous wedding gown cleaning services, ensuring your treasured dress remains flawless for years to come.",
+        icon: Gem,
+        features: [
+          "Eco Friendly",
+          "24h Delivery",
+          "Safe & Hygienic",
+        ],
+      },
+      {
+        id: 6,
+        image: bags,
+        title: "Bag Cleaning",
+        desc: "Refresh your bags with our professional cleaning service. From designer handbags to backpacks, we remove stains and dirt, restoring their beauty and functionality.",
+        icon: Handbag,
+        features: [
+          "Eco Friendly",
+          "24h Delivery",
+          "Safe & Hygienic",
+        ],
+      },
     ],
-  },
-  {
-    id: 2,
-    image: WomenWear,
-    title: "Women's Wear",
-    desc: "Radiate confidence in every outfit with our professional dry cleaning services. From elegant dresses to stylish blouses, we'll refresh your wardrobe, leaving you feeling fabulous and flawless.",
-    icon: Sparkles,
-    features: [
-      "Eco Friendly",
-      "24h Delivery",
-      "Safe & Hygienic",
-    ],
-  },
-  {
-    id: 3,
-    image: kids,
-    title: "Kid's Wear",
-    desc: "Keep your little ones looking their best with our expert kids' wear cleaning services. From vibrant outfits to delicate fabrics, we ensure their clothes are fresh, clean, and ready for every adventure.",
-    icon: Baby,
-    features: [
-      "Eco Friendly",
-      "24h Delivery",
-      "Safe & Hygienic",
-    ],
-  },
-  {
-    id: 4,
-    image: leather,
-    title: "Leather / Suede / Furs",
-    desc: "Premium care for your leather, suede, and furs. Our expert dry cleaning ensures their beauty, softness, and longevity are perfectly preserved.",
-    icon: Briefcase,
-    features: [
-      "Eco Friendly",
-      "24h Delivery",
-      "Safe & Hygienic",
-    ],
-  },
-  {
-    id: 5,
-    image: gown,
-    title: "Wedding Gowns",
-    desc: "Preserve your cherished memories with our meticulous wedding gown cleaning services, ensuring your treasured dress remains flawless for years to come.",
-    icon: Gem,
-    features: [
-      "Eco Friendly",
-      "24h Delivery",
-      "Safe & Hygienic",
-    ],
-  },
-  {
-    id: 6,
-    image: bags,
-    title: "Bag Cleaning",
-    desc: "Refresh your bags with our professional cleaning service. From designer handbags to backpacks, we remove stains and dirt, restoring their beauty and functionality.",
-    icon: Handbag,
-    features: [
-      "Eco Friendly",
-      "24h Delivery",
-      "Safe & Hygienic",
-    ],
-  },
-],
 
     ExpertTitle: "OUR EXPERT DRY CLEANING SERVICES",
 
@@ -578,15 +576,12 @@ export const ServicesData = {
       { id: 3, image: woolen, title: " WOOLENS DRY CLEANING", desc: "At Laundrywala, we use advanced Woolmark-approved Lagoon dry cleaning technology to care for your woolen clothes. This ensures they retain their original shape, size, and softness after every clean." }
     ],
 
-
     CTA: {
       type: "Dry Cleaning",
       headingtop: "Premium Dry Cleaning For ",
       headingbottom: "Delicate Garments",
       subHeading: 'Expert care for suits, dresses and special fabrics with premium cleaning techniques.'
-
     }
-
   },
 
   "ShoeCleaning-service": {
@@ -596,57 +591,55 @@ export const ServicesData = {
       HeroBadge: " ✦ EXPERT CARE",
       HeroTitle: "Give Your Shoes Second Life. ",
       HeroSub: "Confident Steps.",
-
       HeroPara: " Professional shoe cleaning that restores freshness, shine, and comfort.",
-
+      HeroStats: [{ icon: Footprints, title: "DEEP", subTitle: "CLEANING" }, { icon: Sparkles, title: "STAIN & ODOR", subTitle: "REMOVAL" }, { icon: ShieldCheck, title: "SAFE FOR ALL", subTitle: "MATERIALS" }, { icon: Truck, title: "PICKUP &", subTitle: "DELIVERY" }],
     },
 
     WhyUs: {
       title: "Your Clothes, Our Care",
       image: LaundrySteps,
-
     },
 
     Servicetitle: "Shoe Cleaning",
 
-   ServiceOffered: [
-  {
-    id: 1,
-    image: sport,
-    title: "Sports Shoes",
-    desc: "Restore your sports shoes with professional care, removing dirt, stains, and odors to keep them fresh, comfortable, and ready for your next adventure.",
-    icon: Footprints,
-    features: [
-      "Deep Clean",
-      "Odor Removal",
-      "Quick Dry",
+    ServiceOffered: [
+      {
+        id: 1,
+        image: sport,
+        title: "Sports Shoes",
+        desc: "Restore your sports shoes with professional care, removing dirt, stains, and odors to keep them fresh, comfortable, and ready for your next adventure.",
+        icon: Footprints,
+        features: [
+          "Deep Clean",
+          "Odor Removal",
+          "Quick Dry",
+        ],
+      },
+      {
+        id: 2,
+        image: leatherShoe,
+        title: "Suede & Leather Shoes",
+        desc: "Premium cleaning and conditioning for suede and leather shoes, preserving their texture, shine, and restoring their original elegance.",
+        icon: Sparkles,
+        features: [
+          "Leather Care",
+          "Stain Removal",
+          "Color Protection",
+        ],
+      },
+      {
+        id: 3,
+        image: heels,
+        title: "High Heels & Sandals",
+        desc: "Expert cleaning and polishing for high heels and sandals, helping maintain their style, finish, and overall appearance for every occasion.",
+        icon: Crown,
+        features: [
+          "Premium Polish",
+          "Gentle Care",
+          "Shine Finish",
+        ],
+      },
     ],
-  },
-  {
-    id: 2,
-    image: leatherShoe,
-    title: "Suede & Leather Shoes",
-    desc: "Premium cleaning and conditioning for suede and leather shoes, preserving their texture, shine, and restoring their original elegance.",
-    icon: Sparkles,
-    features: [
-      "Leather Care",
-      "Stain Removal",
-      "Color Protection",
-    ],
-  },
-  {
-    id: 3,
-    image: heels,
-    title: "High Heels & Sandals",
-    desc: "Expert cleaning and polishing for high heels and sandals, helping maintain their style, finish, and overall appearance for every occasion.",
-    icon: Crown,
-    features: [
-      "Premium Polish",
-      "Gentle Care",
-      "Shine Finish",
-    ],
-  },
-],
 
     ExpertTitle: "OUR EXPERT SHOE CLEANING SERVICE ",
 
@@ -662,7 +655,6 @@ export const ServicesData = {
       headingbottom: "",
       subHeading: "From sneakers to formal footwear, our expert cleaning process restores shine, removes stains, and protects every pair."
     }
-
   },
 
   "CurtainCleaning-service": {
@@ -672,93 +664,92 @@ export const ServicesData = {
       HeroBadge: " ✦ EXPERT CARE",
       HeroTitle: "Revive Your Curtains,",
       HeroSub: "Without the Hassle",
-
       HeroPara: "Gentle yet effective cleaning for every type of curtain fabric.",
-
+      HeroStats: [{ icon: Sparkles, title: "DEEP CLEANING", subTitle: " & FRESHNESS" }, { icon: Wind, title: "REMOVES", subTitle: "ALLERGENS " }, { icon: ShieldCheck, title: "SAFE FOR ", subTitle: "FABRICS" }, { icon: Home, title: "CLEAN CURTAINS,", subTitle: "BEAUTIFUL HOME" }],
     },
 
     WhyUs: {
       title: "Your Clothes, Our Care",
       image: LaundrySteps,
-
     },
 
     Servicetitle: "Curtain Cleaning",
 
-   ServiceOffered: [
-  {
-    id: 1,
-    image: silk,
-    title: "Silk Curtains",
-    desc: "Professional cleaning that preserves the softness, shine, and delicate fibers of silk curtains.",
-    icon: Sparkles,
-    features: [
-      "Gentle Wash",
-      "Fabric Safe",
-      "Color Care",
+    ServiceOffered: [
+      {
+        id: 1,
+        image: silk,
+        title: "Silk Curtains",
+        desc: "Professional cleaning that preserves the softness, shine, and delicate fibers of silk curtains.",
+        icon: Sparkles,
+        features: [
+          "Gentle Wash",
+          "Fabric Safe",
+          "Color Care",
+        ],
+      },
+      {
+        id: 2,
+        image: velvet,
+        title: "Velvet Curtains",
+        desc: "Deep cleaning for velvet curtains to remove dust while maintaining their rich texture.",
+        icon: Shield,
+        features: [
+          "Deep Clean",
+          "Dust Removal",
+          "Soft Finish",
+        ],
+      },
+      {
+        id: 3,
+        image: multi,
+        title: "Multi-Panel Curtains",
+        desc: "Thorough cleaning for layered curtains, removing trapped dust and restoring freshness.",
+        icon: Layers3,
+        features: [
+          "Layer Care",
+          "Fresh Finish",
+          "Dust Free",
+        ],
+      },
+      {
+        id: 4,
+        image: black,
+        title: "Blackout Curtains",
+        desc: "Powerful cleaning that removes allergens, dirt, and moisture without damaging heavy fabrics.",
+        icon: Blinds,
+        features: [
+          "Allergen Free",
+          "Heavy Fabric",
+          "Deep Wash",
+        ],
+      },
+      {
+        id: 5,
+        image: mesh,
+        title: "Mesh / Net Curtains",
+        desc: "Gentle low-foam cleaning that keeps delicate net curtains fresh, crisp, and bright.",
+        icon: Wind,
+        features: [
+          "Low Foam",
+          "Bright Finish",
+          "Gentle Care",
+        ],
+      },
+      {
+        id: 6,
+        image: blinds,
+        title: "Blinds & Vertical Curtains",
+        desc: "Professional cleaning for blinds and vertical drapes to remove dust and stains.",
+        icon: Blinds,
+        features: [
+          "Dust Removal",
+          "Stain Free",
+          "Expert Care",
+        ],
+      },
     ],
-  },
-  {
-    id: 2,
-    image: velvet,
-    title: "Velvet Curtains",
-    desc: "Deep cleaning for velvet curtains to remove dust while maintaining their rich texture.",
-    icon: Shield,
-    features: [
-      "Deep Clean",
-      "Dust Removal",
-      "Soft Finish",
-    ],
-  },
-  {
-    id: 3,
-    image: multi,
-    title: "Multi-Panel Curtains",
-    desc: "Thorough cleaning for layered curtains, removing trapped dust and restoring freshness.",
-    icon: Layers3,
-    features: [
-      "Layer Care",
-      "Fresh Finish",
-      "Dust Free",
-    ],
-  },
-  {
-    id: 4,
-    image: black,
-    title: "Blackout Curtains",
-    desc: "Powerful cleaning that removes allergens, dirt, and moisture without damaging heavy fabrics.",
-    icon: Blinds,
-    features: [
-      "Allergen Free",
-      "Heavy Fabric",
-      "Deep Wash",
-    ],
-  },
-  {
-    id: 5,
-    image: mesh,
-    title: "Mesh / Net Curtains",
-    desc: "Gentle low-foam cleaning that keeps delicate net curtains fresh, crisp, and bright.",
-    icon: Wind,
-    features: [
-      "Low Foam",
-      "Bright Finish",
-      "Gentle Care",
-    ],
-  },
-  {
-    id: 6,
-    image: blinds,
-    title: "Blinds & Vertical Curtains",
-    desc: "Professional cleaning for blinds and vertical drapes to remove dust and stains.",
-    icon: Blinds,
-    features: [
-      "Dust Removal",
-      "Stain Free",
-      "Expert Care",
-    ],
-  },
-],
+
     ExpertTitle: "OUR EXPERT CURTAIN CLEANING SERVICE ",
 
     ExpertService: [
@@ -773,10 +764,7 @@ export const ServicesData = {
       headingbotton: '',
       subHeading: 'Remove dust, odors, and allergens with our professional curtain cleaning service, keeping your home fresh and your fabrics looking new.'
     }
-
-  }
-  ,
-
+  },
 
   "CarpetCleaning-service": {
     Hero: {
@@ -785,93 +773,91 @@ export const ServicesData = {
       HeroBadge: " ✦ EXPERT CARE",
       HeroTitle: "Deep Clean Carpets.",
       HeroSub: "Healthier Homes",
-
       HeroPara: " Eliminate dirt, stains, and odors to bring your carpets back to life.",
-
+      HeroStats: [{ icon: Sparkles, title: "DEEP", subTitle: "CLEANING" }, { icon: ShieldCheck, title: "REMOVES DIRT", subTitle: "& ALLERGENS" }, { icon: ShieldCheck, title: "SAFE FOR KIDS", subTitle: "& PETS" }, { icon: Home, title: "FRESH & CLEAN", subTitle: "ENVIRONMENT" }],
     },
 
     WhyUs: {
       title: "Your Clothes, Our Care",
       image: LaundrySteps,
-
     },
 
     Servicetitle: "Carpet Cleaning",
 
-ServiceOffered: [
-  {
-    id: 1,
-    image: wool,
-    title: "Wool Carpet",
-    desc: "Soft, warm, and timeless. We gently deep-clean wool carpets using safe solutions that protect texture, softness, and color brilliance.",
-    icon: Flower2,
-    features: [
-      "Deep Clean",
-      "Fabric Safe",
-      "Color Care",
+    ServiceOffered: [
+      {
+        id: 1,
+        image: wool,
+        title: "Wool Carpet",
+        desc: "Soft, warm, and timeless. We gently deep-clean wool carpets using safe solutions that protect texture, softness, and color brilliance.",
+        icon: Flower2,
+        features: [
+          "Deep Clean",
+          "Fabric Safe",
+          "Color Care",
+        ],
+      },
+      {
+        id: 2,
+        image: persian,
+        title: "Persian Carpet",
+        desc: "Elegant craftsmanship needs expert hands. Our delicate process revives the beauty, colors, and softness of your Persian rugs.",
+        icon: Gem,
+        features: [
+          "Expert Care",
+          "Color Restore",
+          "Hand Wash",
+        ],
+      },
+      {
+        id: 3,
+        image: silkCarpet,
+        title: "Silk Carpet",
+        desc: "Fine silk deserves careful attention. We use a low-moisture method that removes dust and stains while preserving natural sheen.",
+        icon: Sparkles,
+        features: [
+          "Low Moisture",
+          "Stain Free",
+          "Shine Care",
+        ],
+      },
+      {
+        id: 4,
+        image: nylon,
+        title: "Nylon Carpet",
+        desc: "Durable and modern. Ideal for offices and homes, cleaned with precision to eliminate dirt, allergens, and restore brightness.",
+        icon: Building2,
+        features: [
+          "Allergen Free",
+          "Deep Clean",
+          "Quick Dry",
+        ],
+      },
+      {
+        id: 5,
+        image: shaggy,
+        title: "Shaggy Carpet",
+        desc: "Fluffy and stylish. We deep vacuum and sanitize shaggy carpets to restore softness, volume, and a freshly groomed feel.",
+        icon: Sofa,
+        features: [
+          "Deep Vacuum",
+          "Soft Finish",
+          "Sanitized",
+        ],
+      },
+      {
+        id: 6,
+        image: turkish,
+        title: "Turkish / Acrylic Carpet",
+        desc: "Rich patterns, lasting beauty. Cleaned with gentle care that protects fiber strength, color depth, and intricate handwoven details.",
+        icon: Star,
+        features: [
+          "Fiber Care",
+          "Gentle Wash",
+          "Premium Finish",
+        ],
+      },
     ],
-  },
-  {
-    id: 2,
-    image: persian,
-    title: "Persian Carpet",
-    desc: "Elegant craftsmanship needs expert hands. Our delicate process revives the beauty, colors, and softness of your Persian rugs.",
-    icon: Gem,
-    features: [
-      "Expert Care",
-      "Color Restore",
-      "Hand Wash",
-    ],
-  },
-  {
-    id: 3,
-    image: silkCarpet,
-    title: "Silk Carpet",
-    desc: "Fine silk deserves careful attention. We use a low-moisture method that removes dust and stains while preserving natural sheen.",
-    icon: Sparkles,
-    features: [
-      "Low Moisture",
-      "Stain Free",
-      "Shine Care",
-    ],
-  },
-  {
-    id: 4,
-    image: nylon,
-    title: "Nylon Carpet",
-    desc: "Durable and modern. Ideal for offices and homes, cleaned with precision to eliminate dirt, allergens, and restore brightness.",
-    icon: Building2,
-    features: [
-      "Allergen Free",
-      "Deep Clean",
-      "Quick Dry",
-    ],
-  },
-  {
-    id: 5,
-    image: shaggy,
-    title: "Shaggy Carpet",
-    desc: "Fluffy and stylish. We deep vacuum and sanitize shaggy carpets to restore softness, volume, and a freshly groomed feel.",
-    icon: Sofa,
-    features: [
-      "Deep Vacuum",
-      "Soft Finish",
-      "Sanitized",
-    ],
-  },
-  {
-    id: 6,
-    image: turkish,
-    title: "Turkish / Acrylic Carpet",
-    desc: "Rich patterns, lasting beauty. Cleaned with gentle care that protects fiber strength, color depth, and intricate handwoven details.",
-    icon: Star,
-    features: [
-      "Fiber Care",
-      "Gentle Wash",
-      "Premium Finish",
-    ],
-  },
-],
 
     ExpertTitle: "OUR EXPERT CARPET CLEANING SERVICE ",
 
@@ -887,7 +873,6 @@ ServiceOffered: [
       headingbottom: "Hassle Free",
       subHeading: "Professional washing, folding and doorstep delivery for your everyday clothes"
     }
-
   },
 
   "Ironing-service": {
@@ -897,15 +882,13 @@ ServiceOffered: [
       HeroBadge: " ✦ EXPERT CARE",
       HeroTitle: "Perfectly Pressed.",
       HeroSub: "Professionally Finished.",
-
       HeroPara: "Save time while we remove every crease with precision and care.",
-
+      HeroStats: [{ icon: Shirt, title: "CRISP", subTitle: "FINISH" }, { icon: Sparkles, title: "WRINKLE", subTitle: "FREE" }, { icon: ShieldCheck, title: "FABRIC", subTitle: "SAFE" }, { icon: Clock, title: "READY", subTitle: "ON-TIME" }],
     },
 
     WhyUs: {
       title: "Your Clothes, Our Care",
       image: LaundrySteps,
-
     },
 
     Servicetitle: "",
@@ -926,12 +909,8 @@ ServiceOffered: [
       headingbottom: 'Ready To Wear',
       subHeading: 'Enjoy crisp, wrinkle-free clothes professionally ironed and neatly prepared for every occasion.'
     }
-
   }
-
-
 };
-
 
 
 export const subscriptionHistory = [

@@ -106,23 +106,25 @@ const SubService = () => {
 
   return (
     <>
-      <div>
+      <div className='py-5'>
         {/* hero section */}
-        <section
-  className="w-full  h-[600px] md:min-h-screen grid grid-cols-1 xl:grid-cols-2  md:pt-24"
-  style={{
-    backgroundImage: `url(${Hero.HeroBackground})`,
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-    backgroundRepeat: "no-repeat",
-  }}
->
-   <div className="flex md:hidden absolute inset-0 md:mt-12 bg-black/60 z-10 h-[600px]"></div>
-        <div className="md:flex hidden absolute inset-0 md:mt-12 bg-white/10 z-10 min-h-screen"></div>
-  {/* Left Content */}
-  <div className="flex items-center justify-center px-5 sm:px-8 lg:px-12 lg:py-0 z-20">
-    <div className="w-full max-w-2xl text-center lg:text-left">
+      <section className="relative w-full h-[600px] md:min-h-screen  overflow-hidden">
 
+  {/* Background Image */}
+<img
+  src={Hero.HeroBackground}
+  alt="Professional dry cleaning service"
+  className="absolute inset-0 w-full h-full object-cover object-[50%_40%] z-0"
+/>
+
+  {/* Light Overlay */}
+  <div className="hidden md:flex absolute inset-0 bg-linear-to-r from-white/90 via-white/20 to-black/20 z-10" />
+
+  <div className="md:hidden absolute inset-0 bg-linear-to-b from-white/50 via-white/20 to-transparent z-10" />
+
+  {/* Content */}
+  <div className="relative z-20 flex h-full items-center text-center md:text-left">
+    <div className="ml-6 sm:ml-10 md:ml-14 lg:ml-20 xl:ml-24 w-full max-w-4xl px-4 ">
       <motion.div
         initial="hidden"
         whileInView="visible"
@@ -130,101 +132,135 @@ const SubService = () => {
         variants={{
           hidden: {},
           visible: {
-            transition: {
-              staggerChildren: 0.2,
-            },
+            transition: { staggerChildren: 0.15 },
           },
         }}
       >
+
+        {/* Main Title */}
         <motion.h1
           variants={{
             hidden: { opacity: 0, y: 30 },
-            visible: {
-              opacity: 1,
-              y: 0,
-              transition: { duration: 0.7 },
-            },
+            visible: { opacity: 1, y: 0, transition: { duration: 0.7 } },
           }}
-         className="font-serif font-bold leading-tight
-text-white
-bg-clip-text text-transparent
-md:bg-none md:text-blue-950 md:text-opacity-100
-text-4xl sm:text-5xl md:text-6xl lg:text-7xl "
+          className="font-serif font-bold leading-[1.05] text-blue-950 text-4xl sm:text-5xl md:text-6xl lg:text-7xl"
         >
           {Hero.HeroTitle}
         </motion.h1>
 
+        {/* Sub Title */}
         <motion.h2
           variants={{
             hidden: { opacity: 0, y: 30 },
-            visible: {
-              opacity: 1,
-              y: 0,
-              transition: { duration: 0.7 },
-            },
+            visible: { opacity: 1, y: 0, transition: { duration: 0.7 } },
           }}
-         className="mt-10 md:mt-6 font-serif font-bold
-bg-gradient-to-r from-[#67E8F9] via-[#22D3EE] to-[#acc2f3]
-bg-clip-text text-transparent
-md:bg-none md:text-blue-600
-drop-shadow-lg md:drop-shadow-none
-text-2xl sm:text-3xl md:text-4xl lg:text-5xl">
+          className="mt-4 md:mt-5 font-serif font-bold text-blue-600 text-2xl sm:text-3xl md:text-4xl lg:text-5xl leading-tight"
+        >
           {Hero.HeroSub}
         </motion.h2>
 
+        {/* Description */}
         <motion.p
           variants={{
             hidden: { opacity: 0 },
-            visible: {
-              opacity: 1,
-              transition: { duration: 0.8 },
-            },
+            visible: { opacity: 1, transition: { duration: 0.8 } },
           }}
-            className="mt-6 text-md sm:text-md md:text-lg text-white  font-semibold md:font-semibold  md:text-blue-950 leading-5 md:leading-8 max-w-xl">
-        
+          className="mt-5 max-w-xl text-sm sm:text-base md:text-lg leading-6 md:leading-8 text-blue-950 font-medium"
+        >
           {Hero.HeroPara}
         </motion.p>
 
+{/* stat */}
+
+<motion.div 
+  initial="hidden"
+  animate="visible"
+  variants={{
+    hidden: {},
+    visible: {
+      transition: {
+        staggerChildren: 0.15,
+      },
+    },
+  }}
+className="flex items-center justify-around mt-4 w-[370px] md:w-full md:max-w-lg "> 
+         {Hero.HeroStats?.map((stat, index) => {
+    const Icon = stat.icon;
+
+    return (
+      <motion.div
+        key={index}
+        className="flex flex-col items-center  "
+        variants={{
+          hidden: {
+            opacity: 0,
+            y: 30,
+            scale: 0.85,
+          },
+          visible: {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            transition: {
+              duration: 0.6,
+              ease: "easeOut",
+            },
+          },
+        }}
+      >
+        <motion.div
+          className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full bg-blue-600 flex items-center justify-center shadow-md"
+          whileHover={{
+            scale: 1.1,
+            rotate: 5,
+          }}
+          transition={{
+            duration: 0.2,
+          }}
+        >
+          <Icon className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-white" />
+        </motion.div>
+
+        <p className="mt-2 sm:mt-3 text-xs sm:text-sm font-bold text-[#12366b] text-center leading-tight">
+          {stat.title}
+        </p>
+
+        <p className="text-xs sm:text-sm font-bold text-[#12366b] text-center leading-tight">
+          {stat.subTitle}
+        </p>
+      </motion.div>
+    );
+  })}
+</motion.div>
+
+        {/* Button */}
         <motion.button
-                     initial={{ opacity: 0, }}
-                     animate={{ opacity: 1, }}
-                     transition={{ duration: 1.2, delay: 0.9 }}
-                     whileHover={{ scale: 1.04, y: -3 }}
-                     whileTap={{ scale: 0.96 }}
-                     onClick={() => navigate("/checkout")}
-                     className="group relative mt-15 mb-4 overflow-hidden rounded-2xl bg-linear-to-r from-blue-700 via-blue-600 to-cyan-500 px-8 py-4 md:px-10 md:py-5 text-white shadow-lg shadow-blue-600/30 transition-all duration-300 hover:shadow-2xl hover:shadow-cyan-400/20"
-                   >
-                     {/* Shine Effect */}
-                     <span className="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/30 to-transparent transition-transform duration-1000 group-hover:translate-x-full" />
-       
-                     {/* Content */}
-                     <span className="relative z-10 flex items-center gap-3 text-base md:text-lg font-semibold">
-                       Book Pickup
-       
-                       <motion.div
-                         animate={{ x: [0, 6, 0] }}
-                         transition={{
-                           duration: 1.4,
-                           repeat: Infinity,
-                         }}
-                       >
-                         <MoveRight className="h-5 w-5" />
-                       </motion.div>
-                     </span>
-                   </motion.button>
-       
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.8 }}
+          whileHover={{ scale: 1.04, y: -3 }}
+          whileTap={{ scale: 0.96 }}
+          onClick={() => navigate("/checkout")}
+          className="group relative mt-8 overflow-hidden rounded-xl bg-gradient-to-r from-blue-700 via-blue-600 to-cyan-500 px-8 py-4 md:px-9 md:py-4 text-white shadow-lg shadow-blue-600/30 transition-all duration-300 hover:shadow-2xl hover:shadow-cyan-400/20"
+        >
+          <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-1000 group-hover:translate-x-full" />
+
+          <span className="relative z-10 flex items-center gap-3 text-base md:text-lg font-semibold">
+            Book Pickup
+
+            <motion.div
+              animate={{ x: [0, 6, 0] }}
+              transition={{ duration: 1.4, repeat: Infinity }}
+            >
+              <MoveRight className="h-5 w-5" />
+            </motion.div>
+          </span>
+        </motion.button>
+
       </motion.div>
     </div>
   </div>
 
-  {/* Right Image */}
-  <div className="hidden xl:flex items-center justify-end overflow-hidden">
-            <img
-              src={Hero.HeroVector}
-              alt=""
-              className="w-full h-full object-cover -translate-x-16"
-            />
-          </div> 
 </section>
 
 
