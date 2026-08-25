@@ -9,7 +9,7 @@ export const getAddresses = async (req, res) => {
         }
         const addresses = await Address.find({ userEmail: email.toLowerCase() });
         res.status(200).json({ success: true, data: addresses });
-    } catch (error) {
+    }  catch (error) {
         console.error('Error retrieving addresses:', error);
         res.status(500).json({ success: false, message: 'Server error retrieving addresses' });
     }
